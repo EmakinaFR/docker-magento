@@ -34,5 +34,25 @@ echo "Zend Server => http://$APP_IP:10081 (admin / $ZS_ADMIN_PASSWORD)"
 echo ""
 ########## Zend Server initialization - END ##########
 
+########## Zend Server virtual hosts - START ##########
+SCRIPT_PATH="`readlink -e $0`"
+DIRECTORY_PATH="`dirname $SCRIPT_PATH`"
+
+VHOSTS_PATH="$DIRECTORY_PATH/vhosts"
+if [ -d "$VHOSTS_PATH" ]; then
+    VHOST_FILES="`find $VHOSTS_PATH -maxdepth 1 -type f -name *:*`"
+    if [ ! -z "$VHOST_FILES" ]; then
+        for FILE in $VHOST_FILES; do
+            FILENAME=$(basename $FILE)
+
+            VHOST_NAME=`echo $FILENAME | cut -d : -f 1`
+            VHOST_PORT=`echo $FILENAME | cut -d : -f 2`
+
+            $ZS_MANAGE vhost-add -n $VHOST_NAME -p $VHOST_PORT -t "$(< $FILE)" -N $WEB_API_KEY -K $WEB_API_KEY_HASH
+        done
+    fi
+fi
+########## Zend Server virtual hosts - END ##########
+
 # Keep the container alive
 /usr/bin/tail -f /dev/null
