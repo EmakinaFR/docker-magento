@@ -4,6 +4,7 @@ MAINTAINER Alexandre JARDIN
 
 COPY ./run /usr/local/bin/run
 RUN chmod 777 /usr/local/bin/run
+COPY ./vhosts /usr/local/bin/vhosts
 
 ########## Zend Server installation - START ##########
 RUN apt-key adv --keyserver pgp.mit.edu --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623
