@@ -60,9 +60,20 @@ if [ -d "$VHOSTS_PATH" ]; then
         fi
     fi
 fi
-
-$ZS_MANAGE restart-php -p -N $WEB_API_KEY -K $WEB_API_KEY_HASH
 ########## Zend Server virtual hosts - END ##########
+
+########## Varnish initialization - START ##########
+service zend-server stop
+sed -i -e 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
+sed -i -e 's/:80/:8080/g' /etc/apache2/sites-enabled/000-default.conf
+sed -i -e 's/80.conf/8080.conf/g' /etc/apache2/sites-enabled/000-default.conf
+mv /usr/local/zend/etc/sites.d/zend-default-vhost-80.conf /usr/local/zend/etc/sites.d/zend-default-vhost-8080.conf
+mv /usr/local/zend/etc/sites.d/http/__default__/80 /usr/local/zend/etc/sites.d/http/__default__/8080
+service zend-server start
+
+sed -i -e 's/:6081/:80/g' /etc/default/varnish
+service varnish start
+########## Varnish initialization - END ##########
 
 # Keep the container alive
 /usr/bin/tail -f /dev/null
