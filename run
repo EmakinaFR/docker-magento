@@ -75,5 +75,9 @@ sed -i -e 's/:6081/:80/g' /etc/default/varnish
 service varnish start
 ########## Varnish initialization - END ##########
 
+########## Percona initialization - START ##########
+service mysql start
+########## Percona initialization - END ##########
+
 # Keep the container alive
 /usr/bin/tail -f /dev/null
