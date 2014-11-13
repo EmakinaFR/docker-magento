@@ -1,1 +1,2 @@
-vhosts
+vhosts/*
+!vhosts/.gitkeep
