@@ -1,115 +1,49 @@
 #!/bin/bash
 
-########## Zend Server initialization - START ##########
-if [[ -z $ZEND_LICENSE_ORDER || -z $ZEND_LICENSE_KEY ]]; then
-    ZEND_LICENSE_ORDER=docker-zs
-    ZEND_LICENSE_KEY=LNUO7341801G21E2B0165435BC41FBDF
+LOGS_DIRECTORY='/var/log/docker'
+if [ ! -d "$LOGS_DIRECTORY" ]; then
+    mkdir ${LOGS_DIRECTORY}
 fi
 
-if [ -z $ZS_ADMIN_PASSWORD ]; then
-    ZS_ADMIN_PASSWORD=`date +%s | sha256sum | base64 | head -c 8`
-    echo $ZS_ADMIN_PASSWORD > /root/zend-password
-fi
+function format_date() {
+    DATE=`date "+%Y-%m-%d %H:%M:%S"`
+}
 
-ZS_MANAGE=/usr/local/zend/bin/zs-manage
-HOSTNAME=`hostname`
-APP_UNIQUE_NAME=$HOSTNAME
-APP_IP=`/sbin/ifconfig eth0| grep 'inet addr:' | awk {'print $2'}| cut -d ':' -f 2`
+function start_progress() {
+    format_date
+    echo "[$DATE] docker.INFO: ${STEP_NAME}..."
+}
 
-service zend-server start
-WEB_API_KEY=`cut -s -f 1 /root/api_key 2> /dev/null`
-WEB_API_KEY_HASH=`cut -s -f 2 /root/api_key 2> /dev/null`
-
-if [ -z $WEB_API_KEY ]; then
-    $ZS_MANAGE bootstrap-single-server -p $ZS_ADMIN_PASSWORD -a 'TRUE' -o $ZEND_LICENSE_ORDER -l $ZEND_LICENSE_KEY | head -1 > /root/api_key
-    WEB_API_KEY=`cut -s -f 1 /root/api_key`
-    WEB_API_KEY_HASH=`cut -s -f 2 /root/api_key`
-fi
-
-echo ""
-echo "Application => http://$APP_IP"
-echo "Zend Server => http://$APP_IP:10081 (admin / $ZS_ADMIN_PASSWORD)"
-echo ""
-########## Zend Server initialization - END ##########
-
-########## Zend Server virtual hosts - START ##########
-SCRIPT_PATH="`readlink -e $0`"
-DIRECTORY_PATH="`dirname $SCRIPT_PATH`"
-
-VHOSTS_PATH="$DIRECTORY_PATH/vhosts"
-if [ -d "$VHOSTS_PATH" ]; then
-    VHOST_FILES="`find $VHOSTS_PATH -maxdepth 1 -type f -name *:*`"
-    if [ ! -z "$VHOST_FILES" ]; then
-        NEW_VHOSTS=''
-
-        for FILE in $VHOST_FILES; do
-            FILENAME=$(basename $FILE)
-
-            VHOST_NAME="`echo $FILENAME | cut -d : -f 1`"
-            VHOST_PORT="`echo $FILENAME | cut -d : -f 2`"
-            CREATION_OUTPUT="$($ZS_MANAGE vhost-add -n $VHOST_NAME -p $VHOST_PORT -t "$(< $FILE)" -N $WEB_API_KEY -K $WEB_API_KEY_HASH 2>&1)"
-
-            VHOST_ID="`echo $CREATION_OUTPUT | cut -d ' ' -f 2`"
-            if [[ "$VHOST_ID" =~ ^[0-9]+$ ]]; then
-                NEW_VHOSTS="$NEW_VHOSTS $VHOST_NAME"
-            fi
-        done
-
-        if [ -n "$NEW_VHOSTS" ]; then
-            echo "127.0.0.1 $NEW_VHOSTS" >> /etc/hosts
-        fi
+RESET="\033[0m" ; GREEN="\033[32m" ; RED="\033[31m"
+function print_status() {
+    if [ $? -eq 0 ]; then
+        format_date
+        echo -e "[$DATE] docker.INFO: ${STEP_NAME} done. ${GREEN}[OK]${RESET}"
+    else
+        format_date
+        echo -e "[$DATE] docker.ERROR: An error occurred during the ${STEP_NAME}, please check the logs: ${STEP_LOGS}. ${RED}[FAIL]${RESET}"
     fi
-fi
-########## Zend Server virtual hosts - END ##########
+}
 
-########## Varnish initialization - START ##########
-service zend-server stop
-sed -i -e 's/Listen 80/Listen 8080/g' /etc/apache2/ports.conf
-sed -i -e 's/:80/:8080/g' /etc/apache2/sites-enabled/000-default.conf
-sed -i -e 's/80.conf/8080.conf/g' /etc/apache2/sites-enabled/000-default.conf
-mv /usr/local/zend/etc/sites.d/zend-default-vhost-80.conf /usr/local/zend/etc/sites.d/zend-default-vhost-8080.conf
-mv /usr/local/zend/etc/sites.d/http/__default__/80 /usr/local/zend/etc/sites.d/http/__default__/8080
-service zend-server start
+STEP_NAME='Zend Server configuration' ; STEP_LOGS="${LOGS_DIRECTORY}/zend-server.log"
+start_progress
+/bin/bash /usr/local/bin/extra/zend-server.sh > ${STEP_LOGS} 2>&1
+print_status
 
-VARNISH_CONFIGURATION='/etc/default/varnish'
-START_LINE=$(awk '/^DAEMON_OPTS="-a :6081 \\$/{ print NR; exit }' ${VARNISH_CONFIGURATION})
-if [[ "$START_LINE" =~ ^[0-9]+$ ]]; then
-    END_LINE=$(wc -l < ${VARNISH_CONFIGURATION})
-    for (( LINE_NUMBER = $START_LINE; LINE_NUMBER <= $END_LINE; LINE_NUMBER ++ ))
-    do
-        LINE_CONTENT=`sed ${LINE_NUMBER}'q;d' ${VARNISH_CONFIGURATION}`
-        if [ "$LINE_CONTENT" == "" ]; then
-            break
-        fi
+STEP_NAME='Virtual hosts creation' ; STEP_LOGS="${LOGS_DIRECTORY}/vhosts.log"
+start_progress
+/bin/bash /usr/local/bin/extra/vhosts.sh > ${STEP_LOGS} 2>&1
+print_status
 
-        NEW_LINE=$(echo "$LINE_CONTENT" | sed 's|\\|\\\\|g;s|"|\\"|g')
-        sed -i -e "${LINE_NUMBER}s|.*|# $NEW_LINE|g" ${VARNISH_CONFIGURATION}
-    done
-fi
+STEP_NAME='Varnish configuration' ; STEP_LOGS="${LOGS_DIRECTORY}/varnish.log"
+start_progress
+/bin/bash /usr/local/bin/extra/varnish.sh > ${STEP_LOGS} 2>&1
+print_status
 
-VARNISH_TMP_FILE='/tmp/varnish.conf'
-cat > ${VARNISH_TMP_FILE} <<HEREDOC
-DAEMON_OPTS="-a :80 \\
-             -T localhost:6082 \\
-             -f /etc/varnish/default.vcl \\
-             -S /etc/varnish/secret \\
-             -s malloc,256m \\
-             -p cli_buffer=16384"
-HEREDOC
-
-sed -i -e "/# DAEMON_OPTS=\"\"/ {
-   r ${VARNISH_TMP_FILE}
-   d
-   }" ${VARNISH_CONFIGURATION}
-rm ${VARNISH_TMP_FILE}
-
-service varnish start
-########## Varnish initialization - END ##########
-
-########## Databases initialization - START ##########
-service mysql start
-mongod --fork --logpath /var/log/mongodb.log
-########## Databases initialization - END ##########
+STEP_NAME='Databases configuration' ; STEP_LOGS="${LOGS_DIRECTORY}/databases.log"
+start_progress
+/bin/bash /usr/local/bin/extra/databases.sh > ${STEP_LOGS} 2>&1
+print_status
 
 # Keep the container alive
 /usr/bin/tail -f /dev/null
