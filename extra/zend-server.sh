@@ -25,6 +25,8 @@ if [ -z ${WEB_API_KEY} ]; then
     WEB_API_KEY_HASH=`cut -s -f 2 /root/api_key`
 fi
 
+${ZS_MANAGE} extension-on -e mongo -N ${WEB_API_KEY} -K ${WEB_API_KEY_HASH}
+
 echo ""
 echo "Application => http://$APP_IP"
 echo "Zend Server => http://$APP_IP:10081 (admin / $ZS_ADMIN_PASSWORD)"
