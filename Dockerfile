@@ -6,7 +6,9 @@ COPY ./run /usr/local/bin/run
 RUN chmod 777 /usr/local/bin/run
 
 COPY ./extra /usr/local/bin/extra
-RUN chmod 777 /usr/local/bin/run
+RUN chmod -R 777 /usr/local/bin/extra/*
+
+COPY ./databases /usr/local/bin/databases
 COPY ./vhosts /usr/local/bin/vhosts
 
 ########## Zend Server installation - START ##########
