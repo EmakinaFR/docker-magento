@@ -44,6 +44,3 @@ STEP_NAME='Databases configuration' ; STEP_LOGS="${LOGS_DIRECTORY}/databases.log
 start_progress
 /bin/bash /usr/local/bin/extra/databases.sh > ${STEP_LOGS} 2>&1
 print_status
-
-# Keep the container alive
-/usr/bin/tail -f /dev/null

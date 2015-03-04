@@ -1,2 +1,4 @@
+databases/*
+!databases/.gitkeep
 vhosts/*
 !vhosts/.gitkeep
