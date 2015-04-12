@@ -1,0 +1,37 @@
+web:
+  build: web
+  environment:
+    - ZS_ADMIN_PASSWORD=password
+  ports:
+    - "8080:8080"
+    - "10081:10081"
+    - "10082:10082"
+    - "10083:10083"
+  volumes:
+    - ~/www:/var/www/html
+  links:
+    - percona
+    - mongo
+
+percona:
+  build: percona
+  environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+  ports:
+    - "3306:3306"
+
+mongo:
+  build: mongo
+  ports:
+    - "27017:27017"
+
+varnish:
+  build: varnish
+  environment:
+    - VARNISH_BACKEND_IP=web
+    - VARNISH_BACKEND_PORT=8080
+  ports:
+    - "80:80"
+    - "6082:6082"
+  links:
+    - web
