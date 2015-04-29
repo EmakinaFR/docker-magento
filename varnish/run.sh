@@ -22,9 +22,10 @@ function init_configuration()
     cat > ${VARNISH_TMP_FILE} <<HEREDOC
 DAEMON_OPTS="-a :${VARNISH_PORT} \\
              -f /etc/varnish/default.vcl \\
-             -T localhost:6082 \\
+             -T :${VARNISH_ADMIN_LISTEN_PORT} \\
              -S /etc/varnish/secret \\
              -s malloc,256m \\
+             -p esi_syntax=0x2 \\
              -p cli_buffer=16384"
 HEREDOC
 

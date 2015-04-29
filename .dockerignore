@@ -2,5 +2,5 @@
 .gitignore
 databases/.gitkeep
 vhosts/.gitkeep
-LICENCE
+LICENSE
 README.md
