@@ -30,6 +30,7 @@ varnish:
   environment:
     - VARNISH_BACKEND_IP=web
     - VARNISH_BACKEND_PORT=8080
+    - VARNISH_ADMIN_LISTEN_PORT=6082
   ports:
     - "80:80"
     - "6082:6082"
