@@ -19,11 +19,16 @@ percona:
       - MYSQL_ALLOW_EMPTY_PASSWORD=1
   ports:
     - "3306:3306"
+  volumes:
+    - /etc/mysql
+    - /var/lib/mysql
 
 mongo:
   build: mongo
   ports:
     - "27017:27017"
+  volumes:
+    - /data/db
 
 varnish:
   build: varnish
