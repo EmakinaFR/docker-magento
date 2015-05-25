@@ -1,4 +1,4 @@
-percona/databases/*
-!percona/databases/.gitkeep
+percona/extra/*
+!percona/extra/.gitkeep
 web/vhosts/*
 !web/vhosts/.gitkeep

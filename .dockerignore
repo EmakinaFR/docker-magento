@@ -1,6 +1,5 @@
-.git
+.git/
 .gitignore
-databases/.gitkeep
-vhosts/.gitkeep
+.gitkeep
 LICENSE
 README.md
