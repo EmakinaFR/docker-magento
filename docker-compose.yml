@@ -1,7 +1,6 @@
 web:
   build: web
-  environment:
-    - ZS_ADMIN_PASSWORD=password
+  env_file: .env
   ports:
     - "8080:8080"
     - "10081:10081"
@@ -15,8 +14,7 @@ web:
 
 percona:
   build: percona
-  environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+  env_file: .env
   ports:
     - "3306:3306"
   volumes:
@@ -32,10 +30,7 @@ mongo:
 
 varnish:
   build: varnish
-  environment:
-    - VARNISH_BACKEND_IP=web
-    - VARNISH_BACKEND_PORT=8080
-    - VARNISH_ADMIN_LISTEN_PORT=6082
+  env_file: .env
   ports:
     - "80:80"
     - "6082:6082"

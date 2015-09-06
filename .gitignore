@@ -2,3 +2,4 @@ percona/extra/*
 !percona/extra/.gitkeep
 web/vhosts/*
 !web/vhosts/.gitkeep
+.env
