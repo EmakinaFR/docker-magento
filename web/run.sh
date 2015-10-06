@@ -27,6 +27,7 @@ function init_configuration()
     mv /usr/local/zend/etc/sites.d/http/__default__/80 /usr/local/zend/etc/sites.d/http/__default__/8080
 
     "${ZS_MANAGE}" extension-on -e mongo -N "${WEB_API_KEY}" -K "${WEB_API_KEY_HASH}"
+    "${ZS_MANAGE}" extension-off -e "Zend Debugger" -N "${WEB_API_KEY}" -K "${WEB_API_KEY_HASH}"
     "${ZS_MANAGE}" extension-off -e "Zend OPcache" -N "${WEB_API_KEY}" -K "${WEB_API_KEY_HASH}"
     "${ZS_MANAGE}" store-directive -d zray.enable -v 0 -N "${WEB_API_KEY}" -K "${WEB_API_KEY_HASH}"
 }
