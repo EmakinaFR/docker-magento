@@ -1,6 +1,6 @@
 web:
   build: web
-  env_file: .env
+  env_file: docker-env
   ports:
     - "8080:8080"
     - "10081:10081"
@@ -16,7 +16,7 @@ web:
 
 percona:
   build: percona
-  env_file: .env
+  env_file: docker-env
   ports:
     - "3306:3306"
   volumes:
@@ -34,7 +34,7 @@ mongo:
 
 varnish:
   build: varnish
-  env_file: .env
+  env_file: docker-env
   ports:
     - "80:80"
     - "6082:6082"
@@ -44,6 +44,6 @@ varnish:
 
 blackfire:
   image: blackfire/blackfire
-  env_file: .env
+  env_file: docker-env
   ports:
     - "8707:8707"
