@@ -30,12 +30,12 @@ function init_databases()
 {
     EXTRA_PATH="${DIRECTORY_PATH}/extra"
     if [[ -d "${EXTRA_PATH}" ]]; then
-        DATABASES_FILES="$(find "${EXTRA_PATH}" -maxdepth 1 -type f -name *.sql)"
+        DATABASES_FILES="$(find "${EXTRA_PATH}" -maxdepth 1 -type f -name *.sql.zip | sort)"
         if [[ ! -z "${DATABASES_FILES}" ]]; then
             for FILE in ${DATABASES_FILES}; do
                 FILENAME="$(basename "${FILE}")"
 
-                IMPORT_OUTPUT="$(mysql -u root < "${FILE}" 2>&1)"
+                IMPORT_OUTPUT="$(unzip -p "${FILE}" | mysql -u root 2>&1)"
                 if [[ ! -z "${IMPORT_OUTPUT}" ]]; then
                     echo "An error occured during the \"${FILENAME}\" import. ${IMPORT_OUTPUT}."
                 else
