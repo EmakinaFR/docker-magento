@@ -1,24 +1,56 @@
 FROM ubuntu:14.04
 
-MAINTAINER Alexandre JARDIN <aja@emakina.fr>
+MAINTAINER Aurélien GIRY <aurelien.giry@gmail.com>
 
 COPY . /usr/local/docker
 RUN chmod -R 777 /usr/local/docker
 
-RUN \
-    apt-key adv --keyserver pgp.mit.edu --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623 && \
-    echo "deb http://repos.zend.com/zend-server/8.5.1/deb_apache2.4 server non-free" >> /etc/apt/sources.list.d/zend-server.list && \
-    apt-get update && apt-get install -y zend-server-php-5.5 && \
-    echo "export PATH=$PATH:/usr/local/zend/bin" >> /root/.bashrc
+RUN apt-get update && apt-get install -y \
+    apache2 \
+    php5 \
+    libapache2-mod-php5 \
+    build-essential
+
+RUN apt-get update && apt-get install -y autoconf \
+    cron \
+    curl \
+    make \
+    vim  \
+    php5-xdebug \
+    php5-cli \
+    php5-json \
+    php5-curl \
+    php-pear \
+    php5-dev \
+    php5-intl \
+    php-apc \
+    php5-gmp \
+    php5-sqlite \
+    php5-mysql \
+    php5-gd \
+    mysql-client
+
+RUN apt-get update && apt-get install -y python-pip \
+    python-dev
+
+RUN pip install --upgrade pip virtualenv Sphinx
 
 RUN \
-    apt-get update && apt-get install -y autoconf cron curl make nano && \
-    yes "" | /usr/local/zend/bin/pecl install mongo
+    curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer
+
+# Install phpunit
+RUN apt-get install -y -f phpunit
+
+RUN echo 'date.timezone = Europe/Paris' >> /etc/php5/cli/php.ini
+RUN echo 'date.timezone = Europe/Paris' >> /etc/php5/apache2/php.ini
+
+RUN pecl update-channels
 
 RUN \
-    export PHP_VERSION=`/usr/local/zend/bin/php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;"` && \
+    export PHP_VERSION=`/usr/bin/php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;"` && \
     curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/${PHP_VERSION} && \
-    export PHP_EXT_DIR=`/usr/local/zend/bin/php -r "echo ini_get('extension_dir');"` && \
+    export PHP_EXT_DIR=`/usr/bin/php -r "echo ini_get('extension_dir');"` && \
     tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp && mv /tmp/blackfire-*.so ${PHP_EXT_DIR}/blackfire.so && \
     chown root ${PHP_EXT_DIR}/blackfire.so && chown :root ${PHP_EXT_DIR}/blackfire.so && chmod 0755 ${PHP_EXT_DIR}/blackfire.so
 

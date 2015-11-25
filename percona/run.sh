@@ -5,6 +5,8 @@ DIRECTORY_PATH=$(dirname "${SCRIPT_PATH}")
 
 function init_configuration()
 {
+    echo "Init Mysql conf";
+
     CONFIG_FILE="${DIRECTORY_PATH}/extra/my.cnf"
     if [[ -e "${CONFIG_FILE}" ]]; then
         cp -f "${CONFIG_FILE}" /etc/mysql/conf.d/custom.cnf
@@ -28,14 +30,16 @@ function start_mysql()
 
 function init_databases()
 {
+    echo "Init databases";
+
     EXTRA_PATH="${DIRECTORY_PATH}/extra"
     if [[ -d "${EXTRA_PATH}" ]]; then
-        DATABASES_FILES="$(find "${EXTRA_PATH}" -maxdepth 1 -type f -name *.sql.zip | sort)"
+        DATABASES_FILES="$(find "${EXTRA_PATH}" -maxdepth 1 -type f -name *.sql | sort)"
         if [[ ! -z "${DATABASES_FILES}" ]]; then
             for FILE in ${DATABASES_FILES}; do
                 FILENAME="$(basename "${FILE}")"
 
-                IMPORT_OUTPUT="$(unzip -p "${FILE}" | mysql -u root 2>&1)"
+                IMPORT_OUTPUT="$(mysql -u root -p${MYSQL_ROOT_PASSWORD} < "${FILE}" 2>&1)"
                 if [[ ! -z "${IMPORT_OUTPUT}" ]]; then
                     echo "An error occured during the \"${FILENAME}\" import. ${IMPORT_OUTPUT}."
                 else
@@ -43,6 +47,7 @@ function init_databases()
                 fi
 
                 rm "${FILE}"
+                service mysql reload
             done
         fi
     fi
@@ -57,7 +62,6 @@ if [[ ! -e "${LOCK_FILE}" ]]; then
     init_configuration
     start_mysql
     init_databases
-
     touch "${LOCK_FILE}"
     wait "${PROCESS_ID}"
 else

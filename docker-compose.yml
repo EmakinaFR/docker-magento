@@ -2,15 +2,16 @@ web:
   build: web
   env_file: docker-env
   ports:
+    - "80:80"
     - "8080:8080"
+    - "443:443"
     - "10081:10081"
     - "10082:10082"
     - "10083:10083"
   volumes:
-    - ~/www:/var/www/html
+    -
   links:
     - percona
-    - mongo
     - blackfire
   tty: true
 
@@ -22,24 +23,6 @@ percona:
   volumes:
     - /etc/mysql
     - /var/lib/mysql
-  tty: true
-
-mongo:
-  build: mongo
-  ports:
-    - "27017:27017"
-  volumes:
-    - /data/db
-  tty: true
-
-varnish:
-  build: varnish
-  env_file: docker-env
-  ports:
-    - "80:80"
-    - "6082:6082"
-  links:
-    - web
   tty: true
 
 blackfire:
