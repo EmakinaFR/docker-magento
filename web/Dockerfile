@@ -22,6 +22,9 @@ RUN \
     tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp && mv /tmp/blackfire-*.so ${PHP_EXT_DIR}/blackfire.so && \
     chown root ${PHP_EXT_DIR}/blackfire.so && chown :root ${PHP_EXT_DIR}/blackfire.so && chmod 0755 ${PHP_EXT_DIR}/blackfire.so
 
+RUN \
+    apt-get update && apt-get install -y php5-redis
+
 RUN usermod -u 1000 www-data
 
 ENTRYPOINT ["/usr/local/docker/run.sh"]
