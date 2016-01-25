@@ -47,3 +47,15 @@ blackfire:
   env_file: docker-env
   ports:
     - "8707:8707"
+
+memcached:
+  image: memcached
+  env_file: docker-env
+  ports:
+    - "11211:11211"
+
+redis:
+  image: redis
+  env_file: docker-env
+  ports:
+    - "6379:6379"

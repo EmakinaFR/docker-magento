@@ -26,16 +26,45 @@ function start_mysql()
     echo "MySQL is alive."
 }
 
+function uncompress_files()
+{
+    workingDir=$1
+    if [[ -d ${workingDir} ]]; then
+        curDir=$(pwd)
+        cd ${workingDir}
+        for zipFile in $(ls *.zip 2>>/dev/null)
+        do
+            echo "Decompress $zipFile"
+            unzip ${zipFile}
+        done
+        for tgzFile in $(ls *.tgz *.tar.gz 2>>/dev/null)
+        do
+            echo "Extract ${tgzFile}"
+            tar -xvf ${tgzFile}
+        done
+        for gzFile in $(ls *.gz 2>>/dev/null)
+        do
+            echo "Extract ${gzFile}"
+            gunzip ${gzFile}
+        done
+        cd ${curDir}
+    else
+        echo "Wrong parameter $*"
+    fi
+}
+
 function init_databases()
 {
     EXTRA_PATH="${DIRECTORY_PATH}/extra"
     if [[ -d "${EXTRA_PATH}" ]]; then
-        DATABASES_FILES="$(find "${EXTRA_PATH}" -maxdepth 1 -type f -name *.sql.zip | sort)"
+        uncompress_files ${EXTRA_PATH}
+        DATABASES_FILES="$(find "${EXTRA_PATH}" -maxdepth 1 -type f -name *.sql | sort)"
         if [[ ! -z "${DATABASES_FILES}" ]]; then
             for FILE in ${DATABASES_FILES}; do
                 FILENAME="$(basename "${FILE}")"
 
-                IMPORT_OUTPUT="$(unzip -p "${FILE}" | mysql -u root 2>&1)"
+                echo "Importing sql file $FILE"
+                IMPORT_OUTPUT="$(mysql -u root < "${FILE}" 2>&1)"
                 if [[ ! -z "${IMPORT_OUTPUT}" ]]; then
                     echo "An error occured during the \"${FILENAME}\" import. ${IMPORT_OUTPUT}."
                 else

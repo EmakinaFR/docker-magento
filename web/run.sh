@@ -48,6 +48,7 @@ function init_vhosts()
                 VHOST_PORT="$(echo "${FILENAME}" | cut -d : -f 2)"
                 VHOST_CONTENT="$(< "${FILE}")"
 
+                echo "Adding vhost $VHOST_NAME $VHOST_PORT"
                 "${ZS_MANAGE}" vhost-add -n "${VHOST_NAME}" -p "${VHOST_PORT}" \
                     -t "$VHOST_CONTENT" -N "${WEB_API_KEY}" -K "${WEB_API_KEY_HASH}" 2>&1
             done
