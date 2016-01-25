@@ -1,9 +1,27 @@
-FROM jacksoncage/varnish:latest
+FROM ubuntu:latest
 
 MAINTAINER Alexandre JARDIN <aja@emakina.fr>
 
 COPY . /usr/local/docker
 RUN chmod -R 777 /usr/local/docker
+
+RUN apt-get update -qq && \
+  apt-get upgrade -yqq && \
+  apt-get -yqq install varnish=3.0.5-2 && \
+  apt-get -yqq clean
+
+# Make our custom VCLs available on the container
+ADD default.vcl /etc/varnish/default.vcl
+
+ENV VARNISH_BACKEND_PORT 8080
+ENV VARNISH_BACKEND_IP web
+ENV VARNISH_PORT 80
+
+# Expose port 80
+EXPOSE 80
+
+# Expose volumes to be able to use data containers
+VOLUME ["/var/lib/varnish", "/etc/varnish"]
 
 RUN apt-get update && apt-get install -y \
     automake \
