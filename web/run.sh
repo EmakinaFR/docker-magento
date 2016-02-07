@@ -1,5 +1,8 @@
 #!/bin/bash
 
+SCRIPT_PATH="$(readlink -e "${0}")"
+DIRECTORY_PATH="$(dirname "${SCRIPT_PATH}")"
+
 function init_server()
 {
     APP_IP="$(/sbin/ifconfig eth0| grep "inet addr:" | awk {"print $2"} | cut -d ":" -f 2)"
@@ -34,10 +37,7 @@ function init_configuration()
 
 function init_vhosts()
 {
-    SCRIPT_PATH="$(readlink -e "${0}")"
-    DIRECTORY_PATH="$(dirname "${SCRIPT_PATH}")"
-
-    VHOSTS_PATH="${DIRECTORY_PATH}/vhosts"
+    VHOSTS_PATH="${DIRECTORY_PATH}/extra"
     if [[ -d "${VHOSTS_PATH}" ]]; then
         VHOST_FILES="$(find "${VHOSTS_PATH}" -maxdepth 1 -type f -name *:*)"
         if [[ ! -z "${VHOST_FILES}" ]]; then
@@ -48,7 +48,6 @@ function init_vhosts()
                 VHOST_PORT="$(echo "${FILENAME}" | cut -d : -f 2)"
                 VHOST_CONTENT="$(< "${FILE}")"
 
-                echo "Adding vhost $VHOST_NAME $VHOST_PORT"
                 "${ZS_MANAGE}" vhost-add -n "${VHOST_NAME}" -p "${VHOST_PORT}" \
                     -t "$VHOST_CONTENT" -N "${WEB_API_KEY}" -K "${WEB_API_KEY_HASH}" 2>&1
             done
@@ -86,6 +85,11 @@ if [[ ! -e "${LOCK_FILE}" ]]; then
     touch "${LOCK_FILE}"
 else
     service zend-server start
+fi
+
+HOSTS_FILE="${DIRECTORY_PATH}/extra/hosts"
+if [[ -e "${HOSTS_FILE}" ]]; then
+    cat "${HOSTS_FILE}" >> /etc/hosts
 fi
 
 tail -f /dev/null
