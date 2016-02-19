@@ -27,8 +27,6 @@ This process assumes that [Docker Engine](https://www.docker.com/docker-engine),
 Otherwise, [Docker Toolbox](https://www.docker.com/toolbox) should be installed before proceeding.
 The path to the local shared folder is `~/www` by default.
 
-After the installation, the Magento application is reachable by using [`http://magento.dev/`](http://magento.dev/).
-
 ### Clone the repository
 ```bash
 $ git clone git@github.com:ajardin/docker-magento.git
