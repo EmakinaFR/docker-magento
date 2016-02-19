@@ -5,9 +5,6 @@ MAINTAINER Alexandre JARDIN <aja@emakina.fr>
 COPY . /usr/local/docker
 RUN chmod -R 777 /usr/local/docker
 
-RUN apt-get update && apt-get install -y varnish=3.0.5-2
-COPY *.vcl /etc/varnish/
-
 RUN apt-get update \
     && apt-get install -y \
         automake \
@@ -26,7 +23,8 @@ RUN apt-get update \
         make \
         pkg-config \
         python-docutils \
-        python-sphinx
+        python-sphinx \
+        varnish=3.0.5-2
 
 RUN apt-get source varnish=3.0.5-2 \
     && cd /varnish-3.0.5 && ./autogen.sh && ./configure && make \
