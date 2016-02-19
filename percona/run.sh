@@ -28,50 +28,52 @@ function start_mysql()
 
 function uncompress_files()
 {
-    workingDir=$1
-    if [[ -d ${workingDir} ]]; then
-        curDir=$(pwd)
-        cd ${workingDir}
-        for zipFile in $(ls *.zip 2>>/dev/null)
-        do
-            echo "Decompress $zipFile"
-            unzip ${zipFile}
-        done
-        for tgzFile in $(ls *.tgz *.tar.gz 2>>/dev/null)
-        do
-            echo "Extract ${tgzFile}"
-            tar -xvf ${tgzFile}
-        done
-        for gzFile in $(ls *.gz 2>>/dev/null)
-        do
-            echo "Extract ${gzFile}"
-            gunzip ${gzFile}
-        done
-        cd ${curDir}
-    else
-        echo "Wrong parameter $*"
-    fi
+    cd "$1"
+
+    for ZIP_FILE in $(ls *.zip 2>>/dev/null)
+    do
+        echo "Decompressing \"${ZIP_FILE}\"..."
+        unzip "${ZIP_FILE}" && rm "${ZIP_FILE}"
+        echo "File \"${ZIP_FILE}\" successfully decompressed."
+    done
+
+    for TGZ_FILE in $(ls *.tgz *.tar.gz 2>>/dev/null)
+    do
+        echo "Decompressing \"${TGZ_FILE}\"..."
+        tar -xvf "${TGZ_FILE}" && rm "${TGZ_FILE}"
+        echo "File \"${TGZ_FILE}\" successfully decompressed."
+    done
+
+    for GZ_FILE in $(ls *.gz 2>>/dev/null)
+    do
+        echo "Decompressing \"${GZ_FILE}\"..."
+        gunzip "${GZ_FILE}" && "${GZ_FILE}"
+        echo "File \"${GZ_FILE}\" successfully decompressed."
+    done
+
+    cd "${DIRECTORY_PATH}"
 }
 
 function init_databases()
 {
     EXTRA_PATH="${DIRECTORY_PATH}/extra"
     if [[ -d "${EXTRA_PATH}" ]]; then
-        uncompress_files ${EXTRA_PATH}
+        uncompress_files "${EXTRA_PATH}"
+
         DATABASES_FILES="$(find "${EXTRA_PATH}" -maxdepth 1 -type f -name *.sql | sort)"
         if [[ ! -z "${DATABASES_FILES}" ]]; then
             for FILE in ${DATABASES_FILES}; do
                 FILENAME="$(basename "${FILE}")"
 
-                echo "Importing sql file $FILE"
+                echo "Importing \"${FILE}\"..."
                 IMPORT_OUTPUT="$(mysql -u root < "${FILE}" 2>&1)"
+
                 if [[ ! -z "${IMPORT_OUTPUT}" ]]; then
                     echo "An error occured during the \"${FILENAME}\" import. ${IMPORT_OUTPUT}."
                 else
                     echo "File \"${FILENAME}\" successfully imported."
+                    rm "${FILE}"
                 fi
-
-                rm "${FILE}"
             done
         fi
     fi

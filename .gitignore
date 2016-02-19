@@ -1,5 +1,7 @@
+mongo/extra/*
+!mongo/extra/.gitkeep
 percona/extra/*
 !percona/extra/.gitkeep
-web/vhosts/*
-!web/vhosts/.gitkeep
+web/extra/*
+!web/extra/.gitkeep
 docker-env
