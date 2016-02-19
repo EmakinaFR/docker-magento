@@ -1,5 +1,8 @@
 #!/bin/bash
 
+SCRIPT_PATH=$(readlink -f "$0")
+DIRECTORY_PATH=$(dirname "${SCRIPT_PATH}")
+
 function init_configuration()
 {
     VARNISH_CONFIGURATION='/etc/default/varnish'
@@ -39,13 +42,18 @@ HEREDOC
 function init_vcl()
 {
     VARNISH_VCL='/etc/varnish/default.vcl'
+
+    CONFIG_FILE="${DIRECTORY_PATH}/extra/default.vcl"
+    if [[ -e "${CONFIG_FILE}" ]]; then
+        cp "${CONFIG_FILE}" "${VARNISH_VCL}"
+    fi
+
     sed -i "s|\${VARNISH_BACKEND_IP}|${VARNISH_BACKEND_IP}|g" ${VARNISH_VCL}
     sed -i "s|\${VARNISH_BACKEND_PORT}|${VARNISH_BACKEND_PORT}|g" ${VARNISH_VCL}
 }
 
 LOCK_FILE="/var/docker.lock"
-if [ ! -e ${LOCK_FILE} ]
-then
+if [[ ! -e "${LOCK_FILE}" ]]; then
     init_configuration
     init_vcl
 
