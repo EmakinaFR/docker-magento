@@ -30,3 +30,9 @@ blackfire:
   env_file: docker-env
   ports:
     - "8707:8707"
+
+#nodejs:
+#  build: nodejs
+#  env_file: docker-env
+#  ports:
+#    - "npm
