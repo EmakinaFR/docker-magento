@@ -1,4 +1,4 @@
-FROM percona:latest
+FROM mariadb:latest
 
 MAINTAINER Alexandre JARDIN <aja@emakina.fr>
 

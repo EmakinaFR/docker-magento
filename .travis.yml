@@ -1,0 +1,12 @@
+sudo: required
+
+language: ruby
+
+services:
+  - docker
+
+script:
+  - cp docker-env.dist docker-env
+  - docker-compose up -d
+  - docker-compose ps
+  

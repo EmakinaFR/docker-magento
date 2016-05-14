@@ -3,20 +3,19 @@ web:
   env_file: docker-env
   ports:
     - "80:80"
-    - "8080:8080"
     - "443:443"
     - "10081:10081"
     - "10082:10082"
     - "10083:10083"
   volumes:
-    -
+    - ~/www:/var/www/html
   links:
-    - percona
+    - mysql
     - blackfire
   tty: true
 
-percona:
-  build: percona
+mysql:
+  build: mysql
   env_file: docker-env
   ports:
     - "3306:3306"
@@ -30,9 +29,3 @@ blackfire:
   env_file: docker-env
   ports:
     - "8707:8707"
-
-#nodejs:
-#  build: nodejs
-#  env_file: docker-env
-#  ports:
-#    - "npm
