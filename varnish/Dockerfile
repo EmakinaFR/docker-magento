@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:trusty
 
 MAINTAINER Alexandre JARDIN <aja@emakina.fr>
 
