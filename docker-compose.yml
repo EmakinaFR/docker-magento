@@ -4,9 +4,6 @@ web:
   ports:
     - "80:80"
     - "443:443"
-    - "10081:10081"
-    - "10082:10082"
-    - "10083:10083"
   volumes:
     - ~/www:/var/www/html
   links:
@@ -22,6 +19,7 @@ mysql:
   volumes:
     - /etc/mysql
     - /var/lib/mysql
+    - ~/shared-folders/dumps:/root/dumps
   tty: true
 
 blackfire:
@@ -29,3 +27,11 @@ blackfire:
   env_file: docker-env
   ports:
     - "8707:8707"
+
+nodejs:
+  build: nodejs
+  env_file: docker-env
+  ports:
+   - "8888:8888"
+  volumes_from:
+   - web
