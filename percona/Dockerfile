@@ -1,4 +1,4 @@
-FROM percona:latest
+FROM percona:5.6
 
 MAINTAINER Alexandre JARDIN <aja@emakina.fr>
 
