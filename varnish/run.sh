@@ -27,9 +27,9 @@ DAEMON_OPTS="-a :${VARNISH_PORT} \\
              -f /etc/varnish/default.vcl \\
              -T :${VARNISH_ADMIN_LISTEN_PORT} \\
              -S /etc/varnish/secret \\
-             -s malloc,256m \\
+             -s malloc,512m \\
              -p esi_syntax=0x2 \\
-             -p cli_buffer=16384"
+             -p cli_buffer=32768"
 HEREDOC
 
     sed -i -e "/# DAEMON_OPTS=\"\"/ {
