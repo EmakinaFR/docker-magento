@@ -81,9 +81,9 @@ function init_databases()
 
 LOCK_FILE="/var/docker.lock"
 if [[ ! -e "${LOCK_FILE}" ]]; then
-    cp /docker-entrypoint.sh /docker-entrypoint-custom.sh
-    sed -i -e "s|exec \"\$@\"|#exec \"\$@\"|g" /docker-entrypoint-custom.sh
-    /bin/bash /docker-entrypoint-custom.sh mysqld
+    cp /entrypoint.sh /entrypoint-custom.sh
+    sed -i -e "s|exec \"\$@\"|#exec \"\$@\"|g" /entrypoint-custom.sh
+    /bin/bash /entrypoint-custom.sh mysqld
 
     init_configuration
     start_mysql
@@ -92,5 +92,5 @@ if [[ ! -e "${LOCK_FILE}" ]]; then
     touch "${LOCK_FILE}"
     wait "${PROCESS_ID}"
 else
-    /bin/bash /docker-entrypoint.sh mysqld
+    /bin/bash /entrypoint.sh mysqld
 fi
