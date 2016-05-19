@@ -11,6 +11,7 @@ web:
   links:
     - percona
     - mongo
+    - redis
     - blackfire
   tty: true
 
@@ -31,6 +32,12 @@ mongo:
   volumes:
     - /data/db
   tty: true
+
+redis:
+  image: redis
+  env_file: docker-env
+  ports:
+    - "6379:6379"
 
 varnish:
   build: varnish
