@@ -1,21 +1,12 @@
-FROM ubuntu:latest
+FROM php-zendserver:8.5-php5.5
 
 MAINTAINER Alexandre JARDIN <aja@emakina.fr>
 
 COPY . /usr/local/docker
 RUN chmod -R 777 /usr/local/docker
 
-RUN apt-key adv --keyserver pgp.mit.edu --recv-key 799058698E65316A2E7A4FF42EAE1437F7D2C623 \
-    && echo "deb http://repos.zend.com/zend-server/8.5/deb_apache2.4 server non-free" >> /etc/apt/sources.list.d/zend-server.list \
-    && apt-get update \
-    && apt-get install -y \
-        autoconf \
-        cron \
-        curl \
-        make \
-        nano \
-        zend-server-php-5.5 \
-    && echo "export PATH=$PATH:/usr/local/zend/bin" >> /root/.bashrc \
+RUN apt-get update \
+    && apt-get install -y autoconf nano \
     && yes "" | /usr/local/zend/bin/pecl install mongo \
     && rm -rf /var/lib/apt/lists/*
 
@@ -24,7 +15,5 @@ RUN export PHP_VERSION=`/usr/local/zend/bin/php -r "echo PHP_MAJOR_VERSION.PHP_M
     && export PHP_EXT_DIR=`/usr/local/zend/bin/php -r "echo ini_get('extension_dir');"` \
     && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp && mv /tmp/blackfire-*.so ${PHP_EXT_DIR}/blackfire.so \
     && chown root ${PHP_EXT_DIR}/blackfire.so && chown :root ${PHP_EXT_DIR}/blackfire.so && chmod 0755 ${PHP_EXT_DIR}/blackfire.so
-
-RUN usermod -u 1000 www-data
 
 ENTRYPOINT ["/usr/local/docker/run.sh"]
