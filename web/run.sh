@@ -11,10 +11,10 @@ function init_configuration()
     mv /usr/local/zend/etc/sites.d/zend-default-vhost-80.conf /usr/local/zend/etc/sites.d/zend-default-vhost-8080.conf
     mv /usr/local/zend/etc/sites.d/http/__default__/80 /usr/local/zend/etc/sites.d/http/__default__/8080
 
-    "${ZS_MANAGE}" extension-on -e mongo -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
-    "${ZS_MANAGE}" extension-off -e "Zend Debugger" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
-    "${ZS_MANAGE}" extension-off -e "Zend OPcache" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
-    "${ZS_MANAGE}" store-directive -d zray.enable -v 0 -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    zs-manage extension-on -e mongo -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    zs-manage extension-off -e "Zend Debugger" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    zs-manage extension-off -e "Zend OPcache" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    zs-manage store-directive -d zray.enable -v 0 -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
 }
 
 function init_vhosts()
@@ -30,7 +30,7 @@ function init_vhosts()
                 VHOST_PORT="$(echo "${FILENAME}" | cut -d : -f 2)"
                 VHOST_CONTENT="$(< "${FILE}")"
 
-                "${ZS_MANAGE}" vhost-add -n "${VHOST_NAME}" -p "${VHOST_PORT}" \
+                zs-manage vhost-add -n "${VHOST_NAME}" -p "${VHOST_PORT}" \
                     -t "$VHOST_CONTENT" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}" 2>&1
             done
         fi
@@ -56,15 +56,14 @@ LOCK_FILE="/var/docker.lock"
 if [[ ! -e "${LOCK_FILE}" ]]; then
     sed -i -e "s|exec /usr/local/bin/nothing|#exec /usr/local/bin/nothing|g" /usr/local/bin/run
     /bin/bash /usr/local/bin/run
-    /usr/local/zend/bin/php /usr/local/zs-init/waitTasksComplete.php
+    php /usr/local/zs-init/waitTasksComplete.php
 
-    ZS_MANAGE="/usr/local/zend/bin/zs-manage"
     WEB_API_KEY_NAME=`/usr/local/zs-init/stateValue.php WEB_API_KEY_NAME`
     WEB_API_KEY_HASH=`/usr/local/zs-init/stateValue.php WEB_API_KEY_HASH`
 
     init_configuration
     init_vhosts
-    "${ZS_MANAGE}" restart -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    zs-manage restart -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
 
     init_blackfire
     service zend-server restart

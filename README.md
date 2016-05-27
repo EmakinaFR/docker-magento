@@ -7,18 +7,20 @@ Here are the environment containers:
 * `web`: This is the Zend Server container (in which the application volume is mounted),
 * `percona`: This is the Percona server container,
 * `mongo`: This is the MongoDB server container,
-* `varnish`: This is the Varnish container,
+* `varnish`: This is the Varnish container (used for caching pages),
+* `redis`: This is the Redis container (used for storing sessions),
 * `blackfire`: This is the Blackfire container (used for profiling the application).
 
 ```bash
 $ docker-compose ps
-        Name                       Command               State                                                  Ports
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        Name                       Command               State                                                           Ports
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 andromeda_blackfire_1   blackfire-agent --socket t ...   Up      0.0.0.0:8707->8707/tcp
-andromeda_mongo_1       /entrypoint.sh mongod            Up      0.0.0.0:27017->27017/tcp
+andromeda_mongo_1       /usr/local/docker/run.sh         Up      0.0.0.0:27017->27017/tcp
 andromeda_percona_1     /usr/local/docker/run.sh         Up      0.0.0.0:3306->3306/tcp
+andromeda_redis_1       docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp
 andromeda_varnish_1     /usr/local/docker/run.sh         Up      0.0.0.0:6082->6082/tcp, 0.0.0.0:80->80/tcp
-andromeda_web_1         /usr/local/docker/run.sh         Up      0.0.0.0:10081->10081/tcp, 0.0.0.0:10082->10082/tcp, 0.0.0.0:10083->10083/tcp, 0.0.0.0:8080->8080/tcp
+andromeda_web_1         /usr/local/docker/run.sh         Up      0.0.0.0:10081->10081/tcp, 0.0.0.0:10082->10082/tcp, 0.0.0.0:10083->10083/tcp, 443/tcp, 80/tcp, 0.0.0.0:8080->8080/tcp
 ```
 
 ## Installation
