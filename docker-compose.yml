@@ -1,59 +1,55 @@
-web:
-  build: web
-  env_file: docker-env
-  ports:
-    - "8080:8080"
-    - "10081:10081"
-    - "10082:10082"
-    - "10083:10083"
-  volumes:
-    - ~/www:/var/www/html
-  links:
-    - percona
-    - mongo
-    - redis
-    - blackfire
-  tty: true
+version: '2'
 
-percona:
-  build: percona
-  env_file: docker-env
-  ports:
-    - "3306:3306"
-  volumes:
-    - /etc/mysql
-    - /var/lib/mysql
-  tty: true
+services:
+  web:
+    build: web
+    env_file: docker-env
+    ports:
+      - "8080:8080"
+      - "10081:10081"
+      - "10082:10082"
+      - "10083:10083"
+    volumes:
+      - ~/www:/var/www/html
+    tty: true
 
-mongo:
-  build: mongo
-  ports:
-    - "27017:27017"
-  volumes:
-    - /data/db
-  tty: true
+  percona:
+    build: percona
+    env_file: docker-env
+    ports:
+      - "3306:3306"
+    volumes:
+      - /etc/mysql
+      - /var/lib/mysql
+    tty: true
 
-redis:
-  image: redis
-  env_file: docker-env
-  ports:
-    - "6379:6379"
+  mongo:
+    build: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - /data/db
+    tty: true
 
-varnish:
-  build: varnish
-  env_file: docker-env
-  ports:
-    - "80:80"
-    - "6082:6082"
-  volumes:
-    - /etc/varnish
-    - /var/lib/varnish
-  links:
-    - web
-  tty: true
+  redis:
+    image: redis
+    env_file: docker-env
+    ports:
+      - "6379:6379"
 
-blackfire:
-  image: blackfire/blackfire
-  env_file: docker-env
-  ports:
-    - "8707:8707"
+  varnish:
+    build: varnish
+    env_file: docker-env
+    ports:
+      - "80:80"
+      - "6082:6082"
+    volumes:
+      - /etc/varnish
+      - /var/lib/varnish
+    tty: true
+
+  blackfire:
+    image: blackfire/blackfire
+    env_file: docker-env
+    ports:
+      - "8707:8707"
