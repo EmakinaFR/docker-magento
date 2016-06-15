@@ -47,9 +47,3 @@ services:
       - /etc/varnish
       - /var/lib/varnish
     tty: true
-
-  blackfire:
-    image: blackfire/blackfire
-    env_file: docker-env
-    ports:
-      - "8707:8707"
