@@ -12,8 +12,6 @@ function init_configuration()
     mv /usr/local/zend/etc/sites.d/http/__default__/80 /usr/local/zend/etc/sites.d/http/__default__/8080
 
     zs-manage extension-on -e mongo -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
-    zs-manage extension-off -e "Zend Debugger" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
-    zs-manage extension-off -e "Zend OPcache" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
     zs-manage store-directive -d zray.enable -v 0 -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
 }
 
@@ -37,20 +35,6 @@ function init_vhosts()
     fi
 }
 
-function init_blackfire()
-{
-    read -r -d '' BLACKFIRE_INI <<HEREDOC
-extension=blackfire.so
-blackfire.agent_socket=tcp://blackfire:${BLACKFIRE_PORT}
-blackfire.agent_timeout=5
-blackfire.log_file=/var/log/blackfire.log
-blackfire.log_level=${BLACKFIRE_LOG_LEVEL}
-blackfire.server_id=${BLACKFIRE_SERVER_ID}
-blackfire.server_token=${BLACKFIRE_SERVER_TOKEN}
-HEREDOC
-
-    echo "${BLACKFIRE_INI}" >> /usr/local/zend/etc/conf.d/blackfire.ini
-}
 
 LOCK_FILE="/var/docker.lock"
 if [[ ! -e "${LOCK_FILE}" ]]; then
@@ -64,9 +48,6 @@ if [[ ! -e "${LOCK_FILE}" ]]; then
     init_configuration
     init_vhosts
     zs-manage restart -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
-
-    init_blackfire
-    service zend-server restart
 
     touch "${LOCK_FILE}"
 else
