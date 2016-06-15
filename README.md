@@ -4,18 +4,16 @@ This repository allows the creation of a Docker environment that meets [Magento]
 ## Architecture
 Here are the environment containers:
 
-* `web`: This is the Zend Server container (in which the application volume is mounted),
-* `percona`: This is the Percona server container,
 * `mongo`: This is the MongoDB server container,
-* `varnish`: This is the Varnish container (used for caching pages),
+* `percona`: This is the Percona server container,
 * `redis`: This is the Redis container (used for storing sessions),
-* `blackfire`: This is the Blackfire container (used for profiling the application).
+* `varnish`: This is the Varnish container (used for caching pages),
+* `web`: This is the Zend Server container (in which the application volume is mounted).
 
 ```bash
 $ docker-compose ps
         Name                       Command               State                                                           Ports
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-andromeda_blackfire_1   blackfire-agent --socket t ...   Up      0.0.0.0:8707->8707/tcp
 andromeda_mongo_1       /usr/local/docker/run.sh         Up      0.0.0.0:27017->27017/tcp
 andromeda_percona_1     /usr/local/docker/run.sh         Up      0.0.0.0:3306->3306/tcp
 andromeda_redis_1       docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp
