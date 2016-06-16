@@ -18,17 +18,12 @@ services:
     env_file: docker-env
     ports:
       - "3306:3306"
-    volumes:
-      - /etc/mysql
-      - /var/lib/mysql
     tty: true
 
   mongo:
     build: mongo
     ports:
       - "27017:27017"
-    volumes:
-      - /data/db
     tty: true
 
   redis:
@@ -36,6 +31,7 @@ services:
     env_file: docker-env
     ports:
       - "6379:6379"
+    tty: true
 
   varnish:
     build: varnish
@@ -43,7 +39,4 @@ services:
     ports:
       - "80:80"
       - "6082:6082"
-    volumes:
-      - /etc/varnish
-      - /var/lib/varnish
     tty: true
