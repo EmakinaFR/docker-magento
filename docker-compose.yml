@@ -19,8 +19,8 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - "./.docker/percona/config:/etc/mysql/conf.d"
-      - "./.docker/percona/data:/var/lib/mysql"
+      - "./docker/percona:/etc/mysql/conf.d"
+      - "percona:/var/lib/mysql"
     tty: true
 
   mongo:
@@ -29,7 +29,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - "./.docker/mongo/data:/data/db"
+      - "mongo:/data/db"
     tty: true
 
   redis:
@@ -46,3 +46,7 @@ services:
       - "80:80"
       - "6082:6082"
     tty: true
+
+volumes:
+  percona: {}
+  mongo: {}
