@@ -1,9 +1,5 @@
 FROM ubuntu:trusty
-
 MAINTAINER Alexandre JARDIN <aja@emakina.fr>
-
-COPY . /usr/local/docker
-RUN chmod -R 777 /usr/local/docker
 
 RUN apt-get update \
     && apt-get install -y \
@@ -32,5 +28,8 @@ RUN apt-get source varnish=3.0.5-2 \
     && ./autogen.sh && ./configure VARNISHSRC=/varnish-3.0.5 && make && make install \
     && cd && rm -rf /varnish* \
     && rm -rf /var/lib/apt/lists/*
+
+COPY . /usr/local/docker
+RUN chmod -R 777 /usr/local/docker
 
 ENTRYPOINT ["/usr/local/docker/run.sh"]
