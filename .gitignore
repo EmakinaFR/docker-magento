@@ -1,7 +1,5 @@
-.docker/*
-!.docker/mongo/data/.gitkeep
-!.docker/percona/config/.gitkeep
-!.docker/percona/data/.gitkeep
+docker/*
+!docker/percona/.gitkeep
 web/extra/*
 !web/extra/.gitkeep
 docker-env
