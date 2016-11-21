@@ -43,13 +43,8 @@ function init_vcl()
 {
     VARNISH_VCL='/etc/varnish/default.vcl'
 
-    CONFIG_FILE="${DIRECTORY_PATH}/extra/default.vcl"
-    if [[ -e "${CONFIG_FILE}" ]]; then
-        cp "${CONFIG_FILE}" "${VARNISH_VCL}"
-    fi
-
-    sed -i "s|\${VARNISH_BACKEND_IP}|${VARNISH_BACKEND_IP}|g" ${VARNISH_VCL}
-    sed -i "s|\${VARNISH_BACKEND_PORT}|${VARNISH_BACKEND_PORT}|g" ${VARNISH_VCL}
+    sed -i "s|127.0.0.1|${VARNISH_BACKEND_IP}|g" ${VARNISH_VCL}
+    sed -i "s|8080|${VARNISH_BACKEND_PORT}|g" ${VARNISH_VCL}
 }
 
 LOCK_FILE="/var/docker.lock"
