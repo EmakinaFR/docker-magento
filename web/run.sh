@@ -3,33 +3,15 @@
 SCRIPT_PATH="$(readlink -e "${0}")"
 DIRECTORY_PATH="$(dirname "${SCRIPT_PATH}")"
 
-function init_configuration()
-{
-    sed -i -e "s|Listen 80|Listen 8080|g" /etc/apache2/ports.conf
-    sed -i -e "s|:80|:8080|g" /etc/apache2/sites-enabled/000-default.conf
-    sed -i -e "s|80.conf|8080.conf|g" /etc/apache2/sites-enabled/000-default.conf
-    mv /usr/local/zend/etc/sites.d/zend-default-vhost-80.conf /usr/local/zend/etc/sites.d/zend-default-vhost-8080.conf
-    mv /usr/local/zend/etc/sites.d/http/__default__/80 /usr/local/zend/etc/sites.d/http/__default__/8080
-
-    zs-manage extension-on -e mongo -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
-    zs-manage store-directive -d zray.enable -v 0 -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
-}
-
 function init_vhosts()
 {
     VHOSTS_PATH="${DIRECTORY_PATH}/extra"
     if [[ -d "${VHOSTS_PATH}" ]]; then
-        VHOST_FILES="$(find "${VHOSTS_PATH}" -maxdepth 1 -type f -name *:* | sort)"
+        VHOST_FILES="$(find "${VHOSTS_PATH}" -maxdepth 1 -type f -name *.dev | sort)"
         if [[ ! -z "${VHOST_FILES}" ]]; then
             for FILE in ${VHOST_FILES}; do
-                FILENAME="$(basename "${FILE}")"
-
-                VHOST_NAME="$(echo "${FILENAME}" | cut -d : -f 1)"
-                VHOST_PORT="$(echo "${FILENAME}" | cut -d : -f 2)"
-                VHOST_CONTENT="$(< "${FILE}")"
-
-                zs-manage vhost-add -n "${VHOST_NAME}" -p "${VHOST_PORT}" \
-                    -t "$VHOST_CONTENT" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}" 2>&1
+                zs-manage vhost-add -n "$(basename "${FILE}")" -p "${ZEND_SERVER_PORT}" \
+                    -t "$(< "${FILE}")" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}" 2>&1
             done
         fi
     fi
@@ -45,7 +27,9 @@ if [[ ! -e "${LOCK_FILE}" ]]; then
     WEB_API_KEY_NAME=`/usr/local/zs-init/stateValue.php WEB_API_KEY_NAME`
     WEB_API_KEY_HASH=`/usr/local/zs-init/stateValue.php WEB_API_KEY_HASH`
 
-    init_configuration
+    zs-manage extension-on -e mongo -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    zs-manage store-directive -d zray.enable -v 0 -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+
     init_vhosts
     zs-manage restart -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
 
