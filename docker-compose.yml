@@ -1,11 +1,11 @@
-version: "2"
+version: "2.1"
 
 services:
   web:
     build: web
     env_file: docker-env
     ports:
-      - "8080:8080"
+      - "8080:80"
       - "10081:10081"
       - "10082:10082"
       - "10083:10083"
@@ -43,7 +43,7 @@ services:
     build: varnish
     env_file: docker-env
     ports:
-      - "80:80"
+      - "80:8080"
       - "6082:6082"
     tty: true
 
