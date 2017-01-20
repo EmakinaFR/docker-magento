@@ -42,6 +42,8 @@ services:
   varnish:
     build: varnish
     env_file: docker-env
+    depends_on:
+      - web
     ports:
       - "80:8080"
       - "6082:6082"
