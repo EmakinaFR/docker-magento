@@ -33,7 +33,7 @@ services:
     tty: true
 
   redis:
-    image: redis
+    image: redis:latest
     env_file: docker-env
     ports:
       - "6379:6379"
