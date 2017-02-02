@@ -1,4 +1,4 @@
-FROM php-zendserver:8.5-php5.5
+FROM php-zendserver:8.5-php5.6
 MAINTAINER Alexandre JARDIN <aja@emakina.fr>
 
 RUN apt-get update \
