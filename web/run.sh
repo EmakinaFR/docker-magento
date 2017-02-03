@@ -10,7 +10,7 @@ function init_vhosts()
         VHOST_FILES="$(find "${VHOSTS_PATH}" -maxdepth 1 -type f -name *.dev | sort)"
         if [[ ! -z "${VHOST_FILES}" ]]; then
             for FILE in ${VHOST_FILES}; do
-                zs-manage vhost-add -n "$(basename "${FILE}")" -p "${ZEND_SERVER_PORT}" \
+                zs-manage vhost-add -n "$(basename "${FILE}")" -p 80 \
                     -t "$(< "${FILE}")" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}" 2>&1
             done
         fi
