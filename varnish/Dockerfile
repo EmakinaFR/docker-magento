@@ -1,5 +1,7 @@
 FROM ubuntu:trusty
+
 MAINTAINER Alexandre JARDIN <aja@emakina.fr>
+LABEL maintainer "Alexandre JARDIN <aja@emakina.fr>"
 
 RUN apt-get update \
     && apt-get install -y \

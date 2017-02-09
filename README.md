@@ -15,8 +15,8 @@ Since this environment is designed for a local usage, it comes with features hel
 The `web` container has a mount point used to share source files.
 By default, the `~/www/` directory is mounted from the host. It's possible to change this path by editing the `docker-compose.yml` file.
 
-It's also possible to create multiple virtual hosts during the container creation.
-All `./web/extra/*.dev` files will be sent to the Zend Server API. Only two things to keep in mind:
+It's also possible to create multiple virtual hosts when the container is starting.
+All `./docker/web/*.dev` files will be sent to the Zend Server API. Only two things to keep in mind:
 - the filename must be the exact domain you want to create and the top-level domain must be `.dev`.
 - the content must be the exact format used by Zend Server.
 
