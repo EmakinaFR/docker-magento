@@ -1,4 +1,4 @@
-version: "2.1"
+version: "3"
 
 services:
   web:
@@ -10,6 +10,7 @@ services:
       - "10082:10082"
       - "10083:10083"
     volumes:
+      - "./docker/web:/tmp/vhosts"
       - "~/www:/var/www/html"
     tty: true
 

@@ -1,5 +1,4 @@
 docker/*
-!docker/percona/.gitkeep
-web/extra/*
-!web/extra/.gitkeep
+!docker/percona/custom.cnf
+!docker/web/magento.dev
 docker-env

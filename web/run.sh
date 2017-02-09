@@ -3,23 +3,8 @@
 SCRIPT_PATH="$(readlink -e "${0}")"
 DIRECTORY_PATH="$(dirname "${SCRIPT_PATH}")"
 
-function init_vhosts()
+function bootstrap_server()
 {
-    VHOSTS_PATH="${DIRECTORY_PATH}/extra"
-    if [[ -d "${VHOSTS_PATH}" ]]; then
-        VHOST_FILES="$(find "${VHOSTS_PATH}" -maxdepth 1 -type f -name *.dev | sort)"
-        if [[ ! -z "${VHOST_FILES}" ]]; then
-            for FILE in ${VHOST_FILES}; do
-                zs-manage vhost-add -n "$(basename "${FILE}")" -p 80 \
-                    -t "$(< "${FILE}")" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}" 2>&1
-            done
-        fi
-    fi
-}
-
-
-LOCK_FILE="/var/docker.lock"
-if [[ ! -e "${LOCK_FILE}" ]]; then
     sed -i -e "s|exec /usr/local/bin/nothing|#exec /usr/local/bin/nothing|g" /usr/local/bin/run
     /bin/bash /usr/local/bin/run
     php /usr/local/zs-init/waitTasksComplete.php
@@ -30,17 +15,44 @@ if [[ ! -e "${LOCK_FILE}" ]]; then
     zs-manage extension-on -e mongo -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
     zs-manage store-directive -d zray.enable -v 0 -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
 
-    init_vhosts
-    zs-manage restart -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    echo >> /etc/apache2/apache2.conf
+    echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
     touch "${LOCK_FILE}"
-else
-    service zend-server start
+}
+
+function init_vhosts()
+{
+    WEB_API_KEY_NAME=`/usr/local/zs-init/stateValue.php WEB_API_KEY_NAME`
+    WEB_API_KEY_HASH=`/usr/local/zs-init/stateValue.php WEB_API_KEY_HASH`
+
+    VHOSTS_PATH="/tmp/vhosts"
+    if [[ -d "${VHOSTS_PATH}" ]]; then
+        VHOST_FILES="$(find "${VHOSTS_PATH}" -maxdepth 1 -type f -name *.dev | sort)"
+        if [[ ! -z "${VHOST_FILES}" ]]; then
+        CURRENT_VHOSTS="$(zs-manage vhost-get-status -N ${WEB_API_KEY_NAME} -K ${WEB_API_KEY_HASH} | awk -F '\t' '{print $3}')"
+
+            for FILE in ${VHOST_FILES}; do
+                VHOST_NAME="$(basename "${FILE}")"
+                echo "${CURRENT_VHOSTS}" | grep -q "${VHOST_NAME}"
+
+                if [[ $? -ne 0 ]]; then
+                    zs-manage vhost-add -n "${VHOST_NAME}" -p 80 \
+                        -t "$(< "${FILE}")" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}" 2>&1
+                fi
+            done
+        fi
+
+        zs-manage restart -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    fi
+}
+
+LOCK_FILE="/var/docker.lock"
+if [[ ! -e "${LOCK_FILE}" ]]; then
+    bootstrap_server
 fi
 
-HOSTS_FILE="${DIRECTORY_PATH}/extra/hosts"
-if [[ -e "${HOSTS_FILE}" ]]; then
-    cat "${HOSTS_FILE}" >> /etc/hosts
-fi
+service zend-server start
+init_vhosts
 
 tail -f /dev/null
