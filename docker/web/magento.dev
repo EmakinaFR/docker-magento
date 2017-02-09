@@ -1,0 +1,15 @@
+<VirtualHost *:80>
+    DocumentRoot "/var/www/html/magento"
+    <Directory "/var/www/html/magento">
+        Options +Indexes +FollowSymLinks
+        DirectoryIndex index.php
+        Order allow,deny
+        Allow from all
+        AllowOverride All
+    </Directory>
+
+    ServerName magento.dev:80
+
+    SetEnv MAGE_RUN_CODE "default"
+    SetEnv MAGE_IS_DEVELOPER_MODE 1
+</VirtualHost>
