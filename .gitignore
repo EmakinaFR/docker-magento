@@ -1,4 +1,3 @@
-docker/*
-!docker/percona/custom.cnf
-!docker/web/magento.dev
+/web/vhosts/*
+!/web/vhosts/magento.conf
 docker-env
