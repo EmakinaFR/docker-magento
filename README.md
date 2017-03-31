@@ -2,6 +2,7 @@
 This repository allows the creation of a Docker environment that meets [Magento 1](http://devdocs.magento.com/guides/m1x/system-requirements.html) requirements.
 
 ## Architecture
+* `mailcatcher`: This container uses the [schickling/mailcatcher](https://hub.docker.com/_/schickling/mailcatcher/) image.
 * `mongo`: This container uses the [mongo:latest](https://hub.docker.com/_/mongo/) image.
 * `percona`: This container uses the [percona:5.6](https://hub.docker.com/_/percona/) image.
 * `redis`: This container uses the [redis:latest](https://hub.docker.com/_/redis/) image.
