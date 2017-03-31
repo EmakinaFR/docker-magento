@@ -24,6 +24,12 @@ services:
       - "percona:/var/lib/mysql"
     tty: true
 
+  mailcatcher:
+    image: schickling/mailcatcher
+    env_file: docker-env
+    ports:
+      - "1080:1080"
+
   mongo:
     image: mongo:latest
     env_file: docker-env

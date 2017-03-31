@@ -14,6 +14,10 @@ function bootstrap_server()
 
     zs-manage extension-on -e mongo -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
     zs-manage store-directive -d zray.enable -v 0 -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    zs-manage store-directive -d SMTP -v mailcatcher -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    zs-manage store-directive -d smtp_port -v 1025 -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    zs-manage store-directive -d sendmail_path -v "/usr/sbin/ssmtp -t" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
+    zs-manage store-directive -d date.timezone -v "Europe/Paris" -N "${WEB_API_KEY_NAME}" -K "${WEB_API_KEY_HASH}"
 
     echo >> /etc/apache2/apache2.conf
     echo "ServerName localhost" >> /etc/apache2/apache2.conf
