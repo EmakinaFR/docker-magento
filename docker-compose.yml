@@ -6,22 +6,8 @@ services:
     env_file: docker-env
     ports:
       - "8080:80"
-      - "10081:10081"
-      - "10082:10082"
-      - "10083:10083"
     volumes:
-      - "./docker/web:/tmp/vhosts"
       - "~/www:/var/www/html"
-    tty: true
-
-  percona:
-    image: percona:5.6
-    env_file: docker-env
-    ports:
-      - "3306:3306"
-    volumes:
-      - "./docker/percona:/etc/mysql/conf.d"
-      - "percona:/var/lib/mysql"
     tty: true
 
   mailcatcher:
@@ -29,6 +15,15 @@ services:
     env_file: docker-env
     ports:
       - "1080:1080"
+
+  mysql:
+    build: mysql
+    env_file: docker-env
+    ports:
+      - "3306:3306"
+    volumes:
+      - "percona:/var/lib/mysql"
+    tty: true
 
   mongo:
     image: mongo:latest
