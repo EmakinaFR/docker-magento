@@ -1,36 +1,32 @@
-FROM ubuntu:trusty
+FROM debian:jessie
 
 MAINTAINER Alexandre JARDIN <aja@emakina.fr>
-LABEL maintainer "Alexandre JARDIN <aja@emakina.fr>"
+LABEL maintainer="Alexandre JARDIN <aja@emakina.fr>"
 
-RUN apt-get update \
-    && apt-get install -y \
+# Install Varnish 4.0 with dependencies
+RUN \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
         automake \
         autotools-dev \
-        apt-transport-https \
-        curl \
-        dpkg-dev \
+        ca-certificates \
         git \
-        graphviz \
-        libedit-dev \
-        libjemalloc-dev \
-        libncurses-dev \
-        libpcre3-dev \
         libtool \
         libvarnishapi-dev \
         make \
         pkg-config \
         python-docutils \
-        python-sphinx \
-        varnish=3.0.5-2
+        varnish=4.0.2-1 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt-get source varnish=3.0.5-2 \
-    && cd /varnish-3.0.5 && ./autogen.sh && ./configure && make \
-    && git clone https://github.com/varnish/libvmod-header.git /varnish-libvmod && cd /varnish-libvmod && git checkout 3.0 \
-    && ./autogen.sh && ./configure VARNISHSRC=/varnish-3.0.5 && make && make install \
-    && cd && rm -rf /varnish* \
-    && rm -rf /var/lib/apt/lists/* \
-    && echo 'backend default { .host = "web"; .port = "80"; }' > /etc/varnish/default.vcl
+# Configure Varnish and libvmod-header
+RUN \
+    perl -pi -e "s/.host = \".+\"/.host = \"web\"/g; s/.port = \".+\"/.port = \"80\"/g" /etc/varnish/default.vcl && \
+    git clone https://github.com/varnish/libvmod-header.git /tmp/libvmod-header && \
+    cd /tmp/libvmod-header && git checkout 4.0 && \
+    ./autogen.sh && ./configure && make install && \
+    rm -rf /tmp/libvmod-header
 
-CMD ["-s", "malloc,512m", "-p", "esi_syntax=0x2", "-p", "cli_buffer=32768", "-F"]
+CMD ["-s", "malloc,512m", "-p", "feature=+esi_disable_xml_check", "-p", "vcc_allow_inline_c=on", "-p", "cli_buffer=32768", "-F"]
 ENTRYPOINT ["varnishd", "-a", ":8080", "-T", ":6082", "-f", "/etc/varnish/default.vcl", "-S", "/etc/varnish/secret"]
