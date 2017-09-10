@@ -10,6 +10,12 @@ services:
       - "~/www:/var/www/html:rw,delegated"
     tty: true
 
+  blackfire:
+    image: blackfire/blackfire
+    env_file: docker-env
+    ports:
+      - "8707:8707"
+
   mailcatcher:
     image: schickling/mailcatcher
     env_file: docker-env
@@ -22,7 +28,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - "percona:/var/lib/mysql"
+      - "mysql:/var/lib/mysql"
     tty: true
 
   mongo:
@@ -52,5 +58,5 @@ services:
     tty: true
 
 volumes:
-  percona: {}
+  mysql: {}
   mongo: {}
