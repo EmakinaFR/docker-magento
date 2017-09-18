@@ -2,12 +2,13 @@
 This repository allows the creation of a Docker environment that meets [Magento 1](http://devdocs.magento.com/guides/m1x/system-requirements.html) requirements.
 
 ## Architecture
-* `web`: This container uses a custom [PHP 5.6 version](https://github.com/ajardin/docker-magento/blob/master/web/Dockerfile) with Apache.
-* `mailcatcher`: This container uses the [schickling/mailcatcher:latest](https://hub.docker.com/r/schickling/mailcatcher/) image.
-* `mysql`: This container uses the [percona:5.6](https://hub.docker.com/_/percona/) image.
-* `mongo`: This container uses the [mongo:latest](https://hub.docker.com/_/mongo/) image.
-* `redis`: This container uses the [redis:latest](https://hub.docker.com/_/redis/) image.
-* `varnish`: This container uses a custom [3.0.5 version](https://github.com/ajardin/docker-magento/blob/master/varnish/Dockerfile).
+* `web`: [PHP 5.6 version](https://github.com/ajardin/docker-magento/blob/master/web/Dockerfile) with Apache.
+* `blackfire`: [blackfire:latest](https://hub.docker.com/r/blackfire/blackfire/) image.
+* `mailcatcher`: [schickling/mailcatcher:latest](https://hub.docker.com/r/schickling/mailcatcher/) image.
+* `mysql`: [percona:5.6](https://hub.docker.com/_/percona/) image.
+* `mongo`: [mongo:latest](https://hub.docker.com/_/mongo/) image.
+* `redis`: [redis:latest](https://hub.docker.com/_/redis/) image.
+* `varnish`: [4.0.2 version](https://github.com/ajardin/docker-magento/blob/master/varnish/Dockerfile) with libvmod-header.
 
 ## Additional Features
 Since this environment is designed for a local usage, it comes with features helping the development workflow.
@@ -49,6 +50,7 @@ $ docker-compose up -d
 $ docker-compose ps
          Name                       Command               State                      Ports
 --------------------------------------------------------------------------------------------------------------
+magento1_blackfire_1     blackfire-agent                  Up      0.0.0.0:8707->8707/tcp
 magento1_mailcatcher_1   mailcatcher -f --ip=0.0.0.0      Up      1025/tcp, 0.0.0.0:1080->1080/tcp
 magento1_mongo_1         docker-entrypoint.sh mongod      Up      0.0.0.0:27017->27017/tcp
 magento1_mysql_1         docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp
