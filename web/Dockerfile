@@ -31,8 +31,8 @@ RUN \
         pdo_mysql \
         soap \
         zip && \
-    yes "" | pecl install mongo && \
-    docker-php-ext-enable mongo && \
+    yes "" | pecl install mongo redis && \
+    docker-php-ext-enable mongo redis && \
     rm -rf /var/lib/apt/lists/* && \
     echo "mailhub=mailcatcher:1025\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf
 
