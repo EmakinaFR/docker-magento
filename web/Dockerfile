@@ -17,6 +17,7 @@ RUN \
         libssl-dev \
         libxml2-dev \
         libxml2-utils \
+        mailutils \
         npm \
         ssh-client \
         ssmtp \
@@ -34,7 +35,7 @@ RUN \
     yes "" | pecl install mongo redis && \
     docker-php-ext-enable mongo redis && \
     rm -rf /var/lib/apt/lists/* && \
-    echo "mailhub=mailcatcher:1025\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf
+    perl -pi -e "s/mailhub=mail/mailhub=maildev/" /etc/ssmtp/ssmtp.conf
 
 # Install Blackfire extension
 RUN \
