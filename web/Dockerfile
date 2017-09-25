@@ -9,6 +9,7 @@ RUN \
     apt-get install -y --no-install-recommends \
         autoconf \
         git \
+        jq \
         libicu-dev \
         libfreetype6-dev \
         libjpeg-dev \
@@ -19,6 +20,7 @@ RUN \
         libxml2-utils \
         mailutils \
         npm \
+        phing \
         ssh-client \
         ssmtp \
         wget && \
