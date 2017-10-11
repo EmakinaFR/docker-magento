@@ -19,11 +19,9 @@ RUN \
         libxml2-dev \
         libxml2-utils \
         mailutils \
-        npm \
         phing \
         ssh-client \
-        ssmtp \
-        wget && \
+        ssmtp && \
     docker-php-ext-install -j$(nproc) \
         bcmath \
         gd \
@@ -47,8 +45,19 @@ RUN \
     mv /tmp/blackfire-*.so $(php -r "echo ini_get('extension_dir');")/blackfire.so
 
 # Install Composer globally
-RUN curl -sS https://getcomposer.org/installer | php && \
+RUN \
+    curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
+
+# Install grunt-cli globally
+RUN \
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh | bash && \
+    export NVM_DIR="$HOME/.nvm" && \
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && \
+    nvm install node && \
+    nvm use node && \
+    npm install -g grunt-cli
 
 # Install custom virtual hosts
 COPY vhosts /etc/apache2/sites-available
