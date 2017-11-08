@@ -59,7 +59,7 @@ RUN \
     nvm use node && \
     npm install -g grunt-cli
 
-# Install custom virtual hosts
+# Install custom Apache configuration
 COPY vhosts /etc/apache2/sites-available
 RUN \
     echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
