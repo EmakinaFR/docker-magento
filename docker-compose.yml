@@ -36,7 +36,7 @@ services:
     tty: true
 
   varnish:
-    build: varnish
+    image: ajardin/varnish:latest
     env_file: docker-env
     depends_on:
       - web
