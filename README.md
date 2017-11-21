@@ -2,24 +2,25 @@
 This repository allows the creation of a Docker environment that meets [Magento 1](http://devdocs.magento.com/guides/m1x/system-requirements.html) requirements.
 
 ## Architecture
-* `web`: [PHP 5.6 version](https://github.com/ajardin/docker-magento/blob/master/web/Dockerfile) with Apache.
-* `mysql`: [percona:5.6](https://hub.docker.com/_/percona/) image.
-* `mongo`: [mongo:latest](https://hub.docker.com/_/mongo/) image.
-* `redis`: [redis:latest](https://hub.docker.com/_/redis/) image.
-* `varnish`: [4.0.2 version](https://github.com/ajardin/docker-magento/blob/master/varnish/Dockerfile) with libvmod-header.
-* `blackfire`: [blackfire/blackfire:latest](https://hub.docker.com/r/blackfire/blackfire/) image.
-* `maildev`: [djfarrelly/maildev:latest](https://hub.docker.com/r/djfarrelly/maildev/) image.
+* `apache`: [PHP 5.6 version](https://github.com/ajardin/docker-magento/blob/master/web/Dockerfile) with Apache (web server).
+* `blackfire`: [blackfire/blackfire:latest](https://hub.docker.com/r/blackfire/blackfire/) image (application profiling).
+* `maildev`: [djfarrelly/maildev:latest](https://hub.docker.com/r/djfarrelly/maildev/) image (emails debugging).
+* `mongo`: [mongo:latest](https://hub.docker.com/_/mongo/) image (additional database).
+* `mysql`: [percona:5.6](https://hub.docker.com/_/percona/) image (Magento database).
+* `nginx` : [nginx:latest](https://hub.docker.com/_/nginx/) image (HTTPS support).
+* `redis`: [redis:latest](https://hub.docker.com/_/redis/) image (Magento caches).
+* `varnish`: [4.0.2 version](https://hub.docker.com/r/ajardin/varnish/) with libvmod-header (Magento FPC).
 
 ## Additional Features
 Since this environment is designed for a local usage, it comes with features helping the development workflow.
 
 ### Apache/PHP
-The `web` container has a mount point used to share source files.
+The `apache` container has a mount point used to share source files.
 By default, the `~/www/` directory is mounted from the host. It's possible to change this path by editing the `docker-compose.yml` file.
 
-It's also possible to add custom virtual hosts: all `./web/vhosts/*.conf` files are copied in the Apache directory during the image build process.
+It's also possible to add custom virtual hosts: all `./apache/vhosts/*.conf` files are copied in the Apache directory during the image build process.
 
-And the `./web/custom.ini` file is used to customize the PHP configuration during the image build process. 
+And the `./apache/custom.ini` file is used to customize the PHP configuration during the image build process. 
 
 ### Percona
 The `./mysql/custom.cnf` file is used to customize the MySQL configuration during the image build process.
@@ -50,13 +51,14 @@ $ docker-compose up -d
 $ docker-compose ps
         Name                      Command               State                      Ports
 ------------------------------------------------------------------------------------------------------------
+magento1_apache_1      docker-custom-entrypoint         Up      0.0.0.0:8080->80/tcp
 magento1_blackfire_1   blackfire-agent                  Up      0.0.0.0:8707->8707/tcp
 magento1_maildev_1     bin/maildev --web 80 --smtp 25   Up      25/tcp, 0.0.0.0:1080->80/tcp
 magento1_mongo_1       docker-entrypoint.sh mongod      Up      0.0.0.0:27017->27017/tcp
 magento1_mysql_1       docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp
+magento1_nginx_1       docker-custom-entrypoint         Up      0.0.0.0:443->443/tcp, 80/tcp
 magento1_redis_1       docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp
-magento1_varnish_1     varnishd -a :8080 -T :6082 ...   Up      0.0.0.0:6082->6082/tcp, 0.0.0.0:80->8080/tcp
-magento1_web_1         docker-custom-entrypoint         Up      0.0.0.0:8080->80/tcp
+magento1_varnish_1     docker-custom-entrypoint         Up      0.0.0.0:6082->6082/tcp, 0.0.0.0:80->8080/tcp
 ```
 Note: You will see something slightly different if you do not clone the repository in a `magento1` directory.
 The container prefix depends on your directory name.
