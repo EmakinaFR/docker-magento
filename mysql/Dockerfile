@@ -1,6 +1,6 @@
 FROM percona:5.6
 
-MAINTAINER Alexandre JARDIN <aja@emakina.fr>
-LABEL maintainer="Alexandre JARDIN <aja@emakina.fr>"
+MAINTAINER Alexandre Jardin <info@ajardin.fr>
+LABEL maintainer="Alexandre Jardin <info@ajardin.fr>"
 
 COPY custom.cnf /etc/mysql/conf.d

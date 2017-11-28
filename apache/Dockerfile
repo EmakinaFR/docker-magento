@@ -1,7 +1,7 @@
 FROM php:5.6-apache
 
-MAINTAINER Alexandre JARDIN <aja@emakina.fr>
-LABEL maintainer="Alexandre JARDIN <aja@emakina.fr>"
+MAINTAINER Alexandre Jardin <info@ajardin.fr>
+LABEL maintainer="Alexandre Jardin <info@ajardin.fr>"
 
 # Install Magento requirements
 RUN \
