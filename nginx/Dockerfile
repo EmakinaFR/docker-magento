@@ -20,4 +20,5 @@ RUN \
 # Install custom entrypoint
 COPY ./entrypoint.sh /usr/local/bin/docker-custom-entrypoint
 RUN chmod 777 /usr/local/bin/docker-custom-entrypoint
+CMD ["nginx", "-g" ,"daemon off;"]
 ENTRYPOINT ["docker-custom-entrypoint"]

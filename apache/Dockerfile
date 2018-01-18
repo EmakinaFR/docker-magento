@@ -5,8 +5,8 @@ LABEL maintainer="Alexandre Jardin <info@ajardin.fr>"
 
 # Install Magento requirements
 RUN \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get update -qq && \
+    apt-get install -y -qq --no-install-recommends \
         autoconf \
         git \
         jq \
@@ -19,7 +19,6 @@ RUN \
         libxml2-dev \
         libxml2-utils \
         mailutils \
-        phing \
         ssh-client \
         ssmtp && \
     docker-php-ext-install -j$(nproc) \
@@ -59,6 +58,11 @@ RUN \
     nvm use node && \
     npm install -g grunt-cli
 
+# Install Phing through PEAR
+RUN \
+    pear channel-discover pear.phing.info && \
+    pear install phing/phing
+
 # Install custom Apache configuration
 COPY vhosts /etc/apache2/sites-available
 RUN \
@@ -73,4 +77,5 @@ COPY custom.ini /usr/local/etc/php/conf.d/
 # Install custom entrypoint
 COPY ./entrypoint.sh /usr/local/bin/docker-custom-entrypoint
 RUN chmod 777 /usr/local/bin/docker-custom-entrypoint
+CMD ["apache2-foreground"]
 ENTRYPOINT ["docker-custom-entrypoint"]
