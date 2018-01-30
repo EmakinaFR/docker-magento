@@ -49,16 +49,16 @@ $ docker-compose up -d
 ### Check the containers
 ```bash
 $ docker-compose ps
-        Name                      Command               State                      Ports
-------------------------------------------------------------------------------------------------------------
-magento1_apache_1      docker-custom-entrypoint         Up      0.0.0.0:8080->80/tcp
-magento1_blackfire_1   blackfire-agent                  Up      0.0.0.0:8707->8707/tcp
+        Name                      Command               State                    Ports
+--------------------------------------------------------------------------------------------------------
+magento1_apache_1      docker-custom-entrypoint a ...   Up      80/tcp
+magento1_blackfire_1   blackfire-agent                  Up      8707/tcp
 magento1_maildev_1     bin/maildev --web 80 --smtp 25   Up      25/tcp, 0.0.0.0:1080->80/tcp
-magento1_mongo_1       docker-entrypoint.sh mongod      Up      0.0.0.0:27017->27017/tcp
+magento1_mongo_1       docker-entrypoint.sh mongo ...   Up      0.0.0.0:27017->27017/tcp
 magento1_mysql_1       docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp
-magento1_nginx_1       docker-custom-entrypoint         Up      0.0.0.0:443->443/tcp, 80/tcp
-magento1_redis_1       docker-entrypoint.sh redis ...   Up      0.0.0.0:6379->6379/tcp
-magento1_varnish_1     docker-custom-entrypoint         Up      0.0.0.0:6082->6082/tcp, 0.0.0.0:80->8080/tcp
+magento1_nginx_1       docker-custom-entrypoint n ...   Up      0.0.0.0:443->443/tcp, 0.0.0.0:80->80/tcp
+magento1_redis_1       docker-entrypoint.sh redis ...   Up      6379/tcp
+magento1_varnish_1     docker-custom-entrypoint         Up
 ```
 Note: You will see something slightly different if you do not clone the repository in a `magento1` directory.
 The container prefix depends on your directory name.
