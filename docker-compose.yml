@@ -9,13 +9,13 @@ services:
     tty: true
 
   blackfire:
-    image: blackfire/blackfire
+    image: blackfire/blackfire:latest
     env_file: docker-env
     depends_on:
       - apache
 
   maildev:
-    image: djfarrelly/maildev
+    image: djfarrelly/maildev:latest
     env_file: docker-env
     depends_on:
       - apache
@@ -44,7 +44,7 @@ services:
     build: nginx
     env_file: docker-env
     depends_on:
-      - varnish
+      - apache
     ports:
       - "80:80"
       - "443:443"
@@ -53,13 +53,6 @@ services:
   redis:
     image: redis:latest
     env_file: docker-env
-    tty: true
-
-  varnish:
-    image: ajardin/varnish:latest
-    env_file: docker-env
-    depends_on:
-      - apache
     tty: true
 
 volumes:
