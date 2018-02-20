@@ -31,8 +31,8 @@ RUN \
         pdo_mysql \
         soap \
         zip && \
-    yes "" | pecl install apcu-4.0.11 mongo redis && \
-    docker-php-ext-enable apcu mongo redis && \
+    yes "" | pecl install apcu-4.0.11 lzf mongo redis && \
+    docker-php-ext-enable apcu lzf mongo redis && \
     rm -rf /var/lib/apt/lists/* && \
     perl -pi -e "s/mailhub=mail/mailhub=maildev/" /etc/ssmtp/ssmtp.conf
 

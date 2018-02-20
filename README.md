@@ -13,7 +13,6 @@ This repository allows the creation of a Docker environment that meets [Magento 
 * `mysql`: [percona:5.6](https://hub.docker.com/_/percona/) image (Magento database).
 * `nginx` : [nginx:latest](https://hub.docker.com/_/nginx/) image (HTTPS support).
 * `redis`: [redis:latest](https://hub.docker.com/_/redis/) image (Magento caches).
-* `varnish`: [4.0.2 version](https://hub.docker.com/r/ajardin/varnish/) with libvmod-header (Magento FPC).
 
 ## Additional Features
 Since this environment is designed for a local usage, it comes with features helping the development workflow.
@@ -58,11 +57,10 @@ $ docker-compose ps
 magento1_apache_1      docker-custom-entrypoint a ...   Up      80/tcp
 magento1_blackfire_1   blackfire-agent                  Up      8707/tcp
 magento1_maildev_1     bin/maildev --web 80 --smtp 25   Up      25/tcp, 0.0.0.0:1080->80/tcp
-magento1_mongo_1       docker-entrypoint.sh mongo ...   Up      0.0.0.0:27017->27017/tcp
+magento1_mongo_1       docker-entrypoint.sh mongod      Up      0.0.0.0:27017->27017/tcp
 magento1_mysql_1       docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp
 magento1_nginx_1       docker-custom-entrypoint n ...   Up      0.0.0.0:443->443/tcp, 0.0.0.0:80->80/tcp
 magento1_redis_1       docker-entrypoint.sh redis ...   Up      6379/tcp
-magento1_varnish_1     docker-custom-entrypoint         Up
 ```
 Note: You will see something slightly different if you do not clone the repository in a `magento1` directory.
 The container prefix depends on your directory name.
