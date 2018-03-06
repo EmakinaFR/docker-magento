@@ -10,23 +10,19 @@ This repository allows the creation of a Docker environment that meets [Magento 
 * `blackfire`: [blackfire/blackfire:latest](https://hub.docker.com/r/blackfire/blackfire/) image (application profiling).
 * `maildev`: [djfarrelly/maildev:latest](https://hub.docker.com/r/djfarrelly/maildev/) image (emails debugging).
 * `mongo`: [mongo:latest](https://hub.docker.com/_/mongo/) image (additional database).
-* `mysql`: [percona:5.6](https://hub.docker.com/_/percona/) image (Magento database).
+* `mysql`: [mysql:latest](https://hub.docker.com/_/mysql/) image (Magento database).
 * `nginx` : [nginx:latest](https://hub.docker.com/_/nginx/) image (HTTPS support).
 * `redis`: [redis:latest](https://hub.docker.com/_/redis/) image (Magento caches).
 
 ## Additional Features
 Since this environment is designed for a local usage, it comes with features helping the development workflow.
 
-### Apache/PHP
 The `apache` container has a mount point used to share source files.
 By default, the `~/www/` directory is mounted from the host. It's possible to change this path by editing the `docker-compose.yml` file.
 
 It's also possible to add custom virtual hosts: all `./apache/vhosts/*.conf` files are copied in the Apache directory during the image build process.
 
 And the `./apache/custom.ini` file is used to customize the PHP configuration during the image build process. 
-
-### Percona
-The `./mysql/custom.cnf` file is used to customize the MySQL configuration during the image build process.
 
 ## Installation
 This process assumes that [Docker Engine](https://www.docker.com/docker-engine) and [Docker Compose](https://docs.docker.com/compose/) are installed.
