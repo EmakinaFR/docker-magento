@@ -32,7 +32,7 @@ services:
     tty: true
 
   mysql:
-    build: mysql
+    image: mysql:latest
     env_file: docker-env
     ports:
       - "3306:3306"
