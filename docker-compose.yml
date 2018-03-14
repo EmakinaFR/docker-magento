@@ -5,7 +5,7 @@ services:
     build: apache
     env_file: docker-env
     volumes:
-      - "~/www:/var/www/html:rw,delegated"
+      - ~/www:/var/www/html:rw,delegated
     tty: true
 
   blackfire:
@@ -20,24 +20,24 @@ services:
     depends_on:
       - apache
     ports:
-      - "1080:80"
+      - 1080:80
 
   mongo:
     image: mongo:latest
     env_file: docker-env
     ports:
-      - "27017:27017"
+      - 27017:27017
     volumes:
-      - "mongo:/data/db"
+      - mongo:/data/db
     tty: true
 
   mysql:
     image: mysql:latest
     env_file: docker-env
     ports:
-      - "3306:3306"
+      - 3306:3306
     volumes:
-      - "mysql:/var/lib/mysql"
+      - mysql:/var/lib/mysql
     tty: true
 
   nginx:
@@ -46,8 +46,8 @@ services:
     depends_on:
       - apache
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     tty: true
 
   redis:
