@@ -1,81 +1,33 @@
-FROM php:5.6-apache
+FROM httpd:2.4
 
 MAINTAINER Alexandre Jardin <info@ajardin.fr>
 LABEL maintainer="Alexandre Jardin <info@ajardin.fr>"
 
-# Install Magento requirements
+# Install Apache requirements
 RUN \
     apt-get update -qq && \
-    apt-get install -y -qq --no-install-recommends \
-        autoconf \
-        git \
-        jq \
-        libicu-dev \
-        libfreetype6-dev \
-        libjpeg-dev \
-        libmcrypt-dev \
-        libpng-dev \
-        libssl-dev \
-        libxml2-dev \
-        libxml2-utils \
-        mailutils \
-        ssh-client \
-        ssmtp && \
-    docker-php-ext-install -j$(nproc) \
-        bcmath \
-        gd \
-        hash \
-        intl \
-        mcrypt \
-        opcache \
-        pdo_mysql \
-        soap \
-        zip && \
-    yes "" | pecl install apcu-4.0.11 lzf mongo redis && \
-    docker-php-ext-enable apcu lzf mongo redis && \
-    rm -rf /var/lib/apt/lists/* && \
-    perl -pi -e "s/mailhub=mail/mailhub=maildev/" /etc/ssmtp/ssmtp.conf
-
-# Install Blackfire extension
-RUN \
-    version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") && \
-    curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/"${version}" && \
-    tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp && \
-    mv /tmp/blackfire-*.so $(php -r "echo ini_get('extension_dir');")/blackfire.so
-
-# Install Composer globally
-RUN \
-    curl -sS https://getcomposer.org/installer | php && \
-    mv composer.phar /usr/local/bin/composer
-
-# Install grunt-cli globally
-RUN \
-    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh | bash && \
-    export NVM_DIR="$HOME/.nvm" && \
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && \
-    nvm install node && \
-    nvm use node && \
-    npm install -g grunt-cli
-
-# Install Phing through PEAR
-RUN \
-    pear channel-discover pear.phing.info && \
-    pear install phing/phing
+    apt-get install -y -qq --no-install-recommends openssl
 
 # Install custom Apache configuration
-COPY vhosts /etc/apache2/sites-available
+COPY vhosts /usr/local/apache2/conf/extra/vhosts
 RUN \
-    echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
-    a2ensite $(find /etc/apache2/sites-available/ -type f -name "*.conf" -not -name "*default*" -printf "%f\n") && \
-    a2enmod headers rewrite && \
-    ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
+    perl -pi -e "s|#ServerName www.example.com:80|ServerName localhost:80|g" /usr/local/apache2/conf/httpd.conf && \
+    perl -pi -e "s|#LoadModule http2_module modules/mod_http2.so|LoadModule http2_module modules/mod_http2.so|g" /usr/local/apache2/conf/httpd.conf && \
+    perl -pi -e "s|#LoadModule proxy_module modules/mod_proxy.so|LoadModule proxy_module modules/mod_proxy.so|g" /usr/local/apache2/conf/httpd.conf && \
+    perl -pi -e "s|#LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so|LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so|g" /usr/local/apache2/conf/httpd.conf && \
+    perl -pi -e "s|#LoadModule rewrite_module modules/mod_rewrite.so|LoadModule rewrite_module modules/mod_rewrite.so|g" /usr/local/apache2/conf/httpd.conf && \
+    perl -pi -e "s|#LoadModule socache_shmcb_module modules/mod_socache_shmcb.so|LoadModule socache_shmcb_module modules/mod_socache_shmcb.so|g" /usr/local/apache2/conf/httpd.conf && \
+    perl -pi -e "s|#LoadModule ssl_module modules/mod_ssl.so|LoadModule ssl_module modules/mod_ssl.so|g" /usr/local/apache2/conf/httpd.conf && \
+    perl -pi -e "s|/usr/local/apache2/htdocs|/var/www/html|g" /usr/local/apache2/conf/httpd.conf && \
+    perl -pi -e "s|#Include conf/extra/httpd-ssl.conf|Include conf/extra/httpd-ssl.conf|g" /usr/local/apache2/conf/httpd.conf && \
+    perl -pi -e "s|#Include conf/extra/httpd-vhosts.conf|Include conf/extra/vhosts/*.conf|g" /usr/local/apache2/conf/httpd.conf
 
-# Install custom PHP configuration
-COPY custom.ini /usr/local/etc/php/conf.d/
+# Generate self-signed SSL certificate
+RUN \
+    mkdir -p /etc/ssl/private/ /etc/ssl/certs/ && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+        -keyout /usr/local/apache2/conf/server.key \
+        -out /usr/local/apache2/conf/server.crt \
+        -subj "/CN=localhost"
 
-# Install custom entrypoint
-COPY ./entrypoint.sh /usr/local/bin/docker-custom-entrypoint
-RUN chmod 777 /usr/local/bin/docker-custom-entrypoint
-CMD ["apache2-foreground"]
-ENTRYPOINT ["docker-custom-entrypoint"]
+WORKDIR /var/www/html
