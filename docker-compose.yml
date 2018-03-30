@@ -4,6 +4,10 @@ services:
   apache:
     build: apache
     env_file: docker-env
+    depends_on:
+      - php
+    ports:
+      - 443:443
     volumes:
       - ~/www:/var/www/html:rw,delegated
     tty: true
@@ -13,6 +17,7 @@ services:
     env_file: docker-env
     depends_on:
       - apache
+      - php
 
   maildev:
     image: djfarrelly/maildev:latest
@@ -40,14 +45,11 @@ services:
       - mysql:/var/lib/mysql
     tty: true
 
-  nginx:
-    build: nginx
+  php:
+    build: php
     env_file: docker-env
-    depends_on:
-      - apache
-    ports:
-      - 80:80
-      - 443:443
+    volumes:
+      - ~/www:/var/www/html:rw,delegated
     tty: true
 
   redis:
