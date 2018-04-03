@@ -34,20 +34,19 @@ $ git clone git@github.com:ajardin/docker-magento.git magento1
 ```
 It's also possible to download it as a [ZIP archive](https://github.com/ajardin/docker-magento/archive/master.zip).
 
-### Define the environment variables
+### Configure the environment variables (optional)
 ```bash
-$ cp docker-env.dist docker-env
-$ nano docker-env
+$ make env
 ```
 
 ### Build the environment
 ```bash
-$ docker-compose up -d
+$ make install
 ```
 
 ### Check the containers
 ```bash
-$ docker-compose ps
+$ make ps
         Name                      Command               State              Ports
 --------------------------------------------------------------------------------------------
 magento1_apache_1      httpd-foreground                 Up      0.0.0.0:443->443/tcp, 80/tcp
