@@ -65,7 +65,7 @@ RUN \
     pear install phing/phing
 
 # Install custom PHP configuration
-COPY custom.ini /usr/local/etc/php/conf.d/
+COPY conf/* /usr/local/etc/php/
 
 # Install custom entrypoint
 COPY entrypoint.sh /usr/local/bin/docker-custom-entrypoint
