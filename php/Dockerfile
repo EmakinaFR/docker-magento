@@ -1,4 +1,4 @@
-FROM php:5.6-fpm
+FROM php:7.2-fpm
 
 MAINTAINER Alexandre Jardin <info@ajardin.fr>
 LABEL maintainer="Alexandre Jardin <info@ajardin.fr>"
@@ -21,18 +21,17 @@ RUN \
         mailutils \
         ssh-client \
         ssmtp && \
+    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-install -j$(nproc) \
         bcmath \
         gd \
-        hash \
         intl \
-        mcrypt \
         opcache \
         pdo_mysql \
         soap \
         zip && \
-    yes "" | pecl install apcu-4.0.11 lzf mongo redis && \
-    docker-php-ext-enable apcu lzf mongo redis && \
+    yes "" | pecl install apcu lzf mongodb redis && \
+    docker-php-ext-enable apcu lzf mongodb redis && \
     rm -rf /var/lib/apt/lists/* && \
     perl -pi -e "s/mailhub=mail/mailhub=maildev/" /etc/ssmtp/ssmtp.conf && \
     perl -pi -e "s|;pm.status_path = /status|pm.status_path = /php_fpm_status|g" /usr/local/etc/php-fpm.d/www.conf

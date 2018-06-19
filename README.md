@@ -3,30 +3,39 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/18bac8535a8c4e5fb5754d6cb7853a75)](https://www.codacy.com/app/ajardin/docker-magento?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ajardin/docker-magento&amp;utm_campaign=Badge_Grade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-This repository allows the creation of a Docker environment that meets [Magento 1](http://devdocs.magento.com/guides/m1x/system-requirements.html) requirements.
+This repository allows the creation of a Docker environment that meets
+[Magento 1](http://devdocs.magento.com/guides/m1x/system-requirements.html) requirements.
+
+:warning: **The `master` branch uses PHP 7.2 which is not compatible with Magento by default. The latest version with
+PHP 5.6 is available under the tag [v2.3](https://github.com/ajardin/docker-magento/releases/tag/v2.3) if you do not
+plan to upgrade your PHP version.** :warning:
 
 ## Architecture
 * `apache`: [httpd:2.4](https://github.com/ajardin/docker-magento/blob/master/apache/Dockerfile) custom image with Apache (web server).
 * `blackfire`: [blackfire/blackfire:latest](https://hub.docker.com/r/blackfire/blackfire/) image (application profiling).
 * `maildev`: [djfarrelly/maildev:latest](https://hub.docker.com/r/djfarrelly/maildev/) image (emails debugging).
 * `mongo`: [mongo:latest](https://hub.docker.com/_/mongo/) image (additional database).
-* `mysql`: [mysql:latest](https://hub.docker.com/_/mysql/) image (Magento database).
-* `php` : [php:5.6-fpm](https://github.com/ajardin/docker-magento/blob/master/php/Dockerfile) custom image with PHP-FPM.
+* `mysql`: [mysql:5.7](https://hub.docker.com/_/mysql/) image (Magento database).
+* `php` : [php:7.2-fpm](https://github.com/ajardin/docker-magento/blob/master/php/Dockerfile) custom image with PHP-FPM.
 * `redis`: [redis:latest](https://hub.docker.com/_/redis/) image (Magento session and caches).
 
 ## Additional Features
 Since this environment is designed for a local usage, it comes with features helping the development workflow.
 
 The `apache` and `php` containers have a mount point used to share source files.
-By default, the `~/www/` directory is mounted from the host. It's possible to change this path by editing the `docker-compose.yml` file.
+By default, the `~/www/` directory is mounted from the host. It's possible to change this path by editing
+the `docker-compose.yml` file.
 
-It's also possible to add custom virtual hosts: all `./apache/vhosts/*.conf` files are copied in the Apache directory during the image build process.
+It's also possible to add custom virtual hosts: all `./apache/vhosts/*.conf` files are copied in the Apache directory
+during the image build process.
 
 And the `./php/custom.ini` file is used to customize the PHP configuration during the image build process. 
 
 ## Installation
-This process assumes that [Docker Engine](https://www.docker.com/docker-engine) and [Docker Compose](https://docs.docker.com/compose/) are installed.
-Otherwise, you should have a look to [Install Docker Engine](https://docs.docker.com/engine/installation/) before proceeding further.
+This process assumes that [Docker Engine](https://www.docker.com/docker-engine)
+and [Docker Compose](https://docs.docker.com/compose/) are installed.
+Otherwise, you should have a look to [Install Docker Engine](https://docs.docker.com/engine/installation/)
+before proceeding further.
 
 ### Clone the repository
 ```bash
