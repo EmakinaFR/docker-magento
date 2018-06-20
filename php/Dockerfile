@@ -44,9 +44,11 @@ RUN \
     mv /tmp/blackfire-*.so $(php -r "echo ini_get('extension_dir');")/blackfire.so
 
 # Install Composer globally
+ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN \
     curl -sS https://getcomposer.org/installer | php && \
-    mv composer.phar /usr/local/bin/composer
+    mv composer.phar /usr/local/bin/composer && \
+    composer global require "hirak/prestissimo:dev-master" --no-suggest --optimize-autoloader --classmap-authoritative
 
 # Install grunt-cli globally
 RUN \
