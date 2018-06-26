@@ -1,5 +1,5 @@
 # Docker for Magento
-[![Build Status](https://travis-ci.org/ajardin/docker-magento.svg?branch=master)](https://travis-ci.org/ajardin/docker-magento)
+[![CircleCI](https://circleci.com/gh/ajardin/docker-magento/tree/master.svg?style=svg)](https://circleci.com/gh/ajardin/docker-magento/tree/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/18bac8535a8c4e5fb5754d6cb7853a75)](https://www.codacy.com/app/ajardin/docker-magento?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ajardin/docker-magento&amp;utm_campaign=Badge_Grade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
