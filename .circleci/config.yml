@@ -1,0 +1,29 @@
+version: 2
+
+jobs:
+  build:
+    machine:
+      image: circleci/classic:edge
+    steps:
+      - checkout
+      - run:
+          name: Defines environment variables
+          command: 'cp docker-env.dist docker-env'
+      - run:
+          name: Builds all services
+          command: 'docker-compose up -d'
+      - run:
+          name: Lists all existing images
+          command: 'docker images'
+      - run:
+          name: Lists all existing containers
+          command: 'docker-compose ps'
+      - run:
+          name: Displays the output of all services
+          command: 'docker-compose logs'
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build

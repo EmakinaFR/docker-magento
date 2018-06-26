@@ -73,6 +73,7 @@ ssh: ## Copy all SSH keys from the host to the "php" container
 	$(DOCKER_COMPOSE) exec -T php sh -c "mkdir -p /root/.ssh"
 	$(DOCKER) cp $(HOME)/.ssh $(shell docker-compose ps -q php):/root/
 	$(DOCKER_COMPOSE) exec -T php sh -c "echo 'eval \$$(ssh-agent) && ssh-add' >> /root/.bashrc"
+	$(DOCKER_COMPOSE) exec -T php sh -c "rm /root/.ssh/config"
 
 .PHONY: cache logs logs-full go-apache go-mysql go-php ps stats ssh
 
