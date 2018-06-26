@@ -1,6 +1,4 @@
 FROM php:7.2-fpm
-
-MAINTAINER Alexandre Jardin <info@ajardin.fr>
 LABEL maintainer="Alexandre Jardin <info@ajardin.fr>"
 
 # Install Magento requirements
@@ -52,13 +50,10 @@ RUN \
 
 # Install grunt-cli globally
 RUN \
-    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh | bash && \
-    export NVM_DIR="$HOME/.nvm" && \
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && \
-    nvm install node && \
-    nvm use node && \
-    npm install -g grunt-cli
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash && \
+    . ~/.nvm/nvm.sh && \
+    nvm install stable && \
+    npm install -g grunt-cli && \
 
 # Install Phing through PEAR
 RUN \
