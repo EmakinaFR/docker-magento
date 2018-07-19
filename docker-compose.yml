@@ -53,7 +53,7 @@ services:
     tty: true
 
   redis:
-    image: redis:latest
+    image: redis:4-alpine
     env_file: docker-env
     tty: true
 

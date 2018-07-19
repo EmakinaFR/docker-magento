@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 set -euo pipefail
 
 cat << CONFIG > "${PHP_INI_DIR}"/conf.d/blackfire.ini
