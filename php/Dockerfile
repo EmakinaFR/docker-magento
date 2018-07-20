@@ -1,40 +1,43 @@
-FROM php:7.2-fpm
+FROM php:7.2-fpm-alpine
 
 MAINTAINER Alexandre Jardin <info@ajardin.fr>
 LABEL maintainer="Alexandre Jardin <info@ajardin.fr>"
 
 # Install Magento requirements
 RUN \
-    apt-get update -qq && \
-    apt-get install -y -qq --no-install-recommends \
-        autoconf \
+    apk add --no-cache --virtual .persistent-deps \
+        freetype-dev \
         git \
         jq \
-        libicu-dev \
-        libfreetype6-dev \
-        libjpeg-dev \
-        libmcrypt-dev \
+        icu-libs \
+        libjpeg-turbo-dev \
         libpng-dev \
-        libssl-dev \
         libxml2-dev \
         libxml2-utils \
-        mailutils \
-        ssh-client \
-        ssmtp && \
+        openssh-client \
+        perl \
+        ssmtp \
+        yarn && \
+    apk add --no-cache --virtual .build-deps \
+        $PHPIZE_DEPS \
+        icu-dev && \
     docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-install -j$(nproc) \
         bcmath \
-        gd \
         intl \
+        gd \
         opcache \
         pdo_mysql \
         soap \
         zip && \
     yes "" | pecl install apcu lzf mongodb redis && \
     docker-php-ext-enable apcu lzf mongodb redis && \
-    rm -rf /var/lib/apt/lists/* && \
     perl -pi -e "s/mailhub=mail/mailhub=maildev/" /etc/ssmtp/ssmtp.conf && \
-    perl -pi -e "s|;pm.status_path = /status|pm.status_path = /php_fpm_status|g" /usr/local/etc/php-fpm.d/www.conf
+    perl -pi -e "s|;pm.status_path = /status|pm.status_path = /php_fpm_status|g" /usr/local/etc/php-fpm.d/www.conf && \
+    pear channel-discover pear.phing.info && \
+    pear install phing/phing && \
+    yarn global add grunt-cli && \
+    apk del .build-deps
 
 # Install Blackfire extension
 RUN \
@@ -49,21 +52,6 @@ RUN \
     curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
     composer global require "hirak/prestissimo:dev-master" --no-suggest --optimize-autoloader --classmap-authoritative
-
-# Install grunt-cli globally
-RUN \
-    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh | bash && \
-    export NVM_DIR="$HOME/.nvm" && \
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" && \
-    nvm install node && \
-    nvm use node && \
-    npm install -g grunt-cli
-
-# Install Phing through PEAR
-RUN \
-    pear channel-discover pear.phing.info && \
-    pear install phing/phing
 
 # Install custom PHP configuration
 COPY conf/* /usr/local/etc/php/

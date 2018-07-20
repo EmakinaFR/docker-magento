@@ -1,12 +1,10 @@
-FROM httpd:2.4
+FROM httpd:2.4-alpine
 
 MAINTAINER Alexandre Jardin <info@ajardin.fr>
 LABEL maintainer="Alexandre Jardin <info@ajardin.fr>"
 
 # Install Apache requirements
-RUN \
-    apt-get update -qq && \
-    apt-get install -y -qq --no-install-recommends openssl
+RUN apk add --no-cache --virtual .persistent-deps openssl
 
 # Install custom Apache configuration
 COPY vhosts /usr/local/apache2/conf/extra/vhosts
