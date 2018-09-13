@@ -12,6 +12,7 @@ RUN \
         libxml2-dev \
         libxml2-utils \
         openssh-client \
+        patch \
         perl \
         ssmtp \
         yarn && \
