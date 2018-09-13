@@ -1,22 +1,22 @@
 # Docker for Magento
-[![CircleCI](https://circleci.com/gh/ajardin/docker-magento/tree/master.svg?style=svg)](https://circleci.com/gh/ajardin/docker-magento/tree/master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/18bac8535a8c4e5fb5754d6cb7853a75)](https://www.codacy.com/app/ajardin/docker-magento?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ajardin/docker-magento&amp;utm_campaign=Badge_Grade)
+[![CircleCI](https://circleci.com/gh/EmakinaFR/docker-magento.svg?style=svg)](https://circleci.com/gh/EmakinaFR/docker-magento)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6b7e8b07b8124506a405a7aeb4793199)](https://www.codacy.com/app/ajardin/docker-magento?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EmakinaFR/docker-magento&amp;utm_campaign=Badge_Grade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 This repository allows the creation of a Docker environment that meets
 [Magento 1](http://devdocs.magento.com/guides/m1x/system-requirements.html) requirements.
 
 :warning: **The `master` branch uses PHP 7.2 which is not compatible with Magento by default. The latest version with
-PHP 5.6 is available under the tag [v2.3](https://github.com/ajardin/docker-magento/releases/tag/v2.3) if you do not
+PHP 5.6 is available under the tag [v2.3](https://github.com/EmakinaFR/docker-magento/releases/tag/v2.3) if you do not
 plan to upgrade your PHP version.** :warning:
 
 ## Architecture
-* `apache`: [httpd:2.4-alpine](https://github.com/ajardin/docker-magento/blob/master/apache/Dockerfile) custom image with Apache 2.4 (web server).
+* `apache`: [httpd:2.4-alpine](https://github.com/EmakinaFR/docker-magento/blob/master/apache/Dockerfile) custom image with Apache 2.4 (web server).
 * `blackfire`: [blackfire/blackfire:latest](https://hub.docker.com/r/blackfire/blackfire/) image (application profiling).
 * `maildev`: [djfarrelly/maildev:latest](https://hub.docker.com/r/djfarrelly/maildev/) image (emails debugging).
 * `mongo`: [mongo:3.6](https://store.docker.com/images/mongo) image (additional database).
 * `mysql`: [mysql:5.7](https://store.docker.com/images/mysql) image (Magento database).
-* `php` : [php:7.2-fpm-alpine](https://github.com/ajardin/docker-magento/blob/master/php/Dockerfile) custom image with PHP-FPM 7.2.
+* `php` : [php:7.2-fpm-alpine](https://github.com/EmakinaFR/docker-magento/blob/master/php/Dockerfile) custom image with PHP-FPM 7.2.
 * `redis`: [redis:4-alpine](https://store.docker.com/images/redis) image (Magento session and caches).
 
 ## Additional Features
@@ -39,9 +39,9 @@ before proceeding further.
 
 ### Clone the repository
 ```bash
-$ git clone git@github.com:ajardin/docker-magento.git magento1
+$ git clone git@github.com:EmakinaFR/docker-magento.git magento1
 ```
-It's also possible to download it as a [ZIP archive](https://github.com/ajardin/docker-magento/archive/master.zip).
+It's also possible to download it as a [ZIP archive](https://github.com/EmakinaFR/docker-magento/archive/master.zip).
 
 ### Configure the environment variables (optional)
 ```bash
