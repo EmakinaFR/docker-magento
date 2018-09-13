@@ -1,8 +1,5 @@
 FROM php:7.2-fpm-alpine
 
-MAINTAINER Alexandre Jardin <info@ajardin.fr>
-LABEL maintainer="Alexandre Jardin <info@ajardin.fr>"
-
 # Install Magento requirements
 RUN \
     apk add --no-cache --virtual .persistent-deps \
