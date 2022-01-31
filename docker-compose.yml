@@ -48,8 +48,12 @@ services:
   php:
     build: php
     env_file: docker-env
+    environment:
+      - SSH_AUTH_SOCK=/run/host-services/ssh-auth.sock
     volumes:
       - ~/www:/var/www/html:rw,delegated
+      # SSH socket
+      - /run/host-services/ssh-auth.sock:/run/host-services/ssh-auth.sock
     tty: true
 
   redis:
