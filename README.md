@@ -1,6 +1,4 @@
 # Docker for Magento
-[![CircleCI](https://circleci.com/gh/EmakinaFR/docker-magento.svg?style=svg)](https://circleci.com/gh/EmakinaFR/docker-magento)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6b7e8b07b8124506a405a7aeb4793199)](https://www.codacy.com/app/ajardin/docker-magento?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EmakinaFR/docker-magento&amp;utm_campaign=Badge_Grade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 This repository allows the creation of a Docker environment that meets
@@ -10,14 +8,14 @@ This repository allows the creation of a Docker environment that meets
 PHP 5.6 is available under the tag [v2.3](https://github.com/EmakinaFR/docker-magento/releases/tag/v2.3) if you do not
 plan to upgrade your PHP version.** :warning:
 
-## Architecture
-* `apache`: [httpd:2.4-alpine](https://github.com/EmakinaFR/docker-magento/blob/master/apache/Dockerfile) custom image with Apache 2.4 (web server).
-* `blackfire`: [blackfire/blackfire:latest](https://hub.docker.com/r/blackfire/blackfire/) image (application profiling).
-* `maildev`: [djfarrelly/maildev:latest](https://hub.docker.com/r/djfarrelly/maildev/) image (emails debugging).
-* `mongo`: [mongo:3.6](https://store.docker.com/images/mongo) image (additional database).
-* `mysql`: [mysql:5.7](https://store.docker.com/images/mysql) image (Magento database).
-* `php` : [php:7.2-fpm-alpine](https://github.com/EmakinaFR/docker-magento/blob/master/php/Dockerfile) custom image with PHP-FPM 7.2.
-* `redis`: [redis:4-alpine](https://store.docker.com/images/redis) image (Magento session and caches).
+## Images
+* `httpd:2.4-alpine`: [custom image](https://github.com/EmakinaFR/docker-magento/blob/master/apache/Dockerfile) with apache 2.4 (web server).
+* `blackfire/blackfire:latest`: application profiling.
+* `djfarrelly/maildev:latest`: emails web Interface for viewing and testing emails during development.
+* `mongo:3.6`: additional database.
+* `mysql:8`: magento database.
+* `php:7.2-fpm-alpine`: [custom image](https://github.com/EmakinaFR/docker-magento/blob/master/php/Dockerfile) with php-fpm 7.2.
+* `redis:6-alpine`: magento sessions and caches.
 
 ## Additional Features
 Since this environment is designed for a local usage, it comes with features helping the development workflow.
