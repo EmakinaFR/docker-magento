@@ -1,6 +1,4 @@
 # Docker for Magento
-[![CircleCI](https://circleci.com/gh/EmakinaFR/docker-magento.svg?style=svg)](https://circleci.com/gh/EmakinaFR/docker-magento)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6b7e8b07b8124506a405a7aeb4793199)](https://www.codacy.com/app/ajardin/docker-magento?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EmakinaFR/docker-magento&amp;utm_campaign=Badge_Grade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 This repository allows the creation of a Docker environment that meets
