@@ -40,11 +40,10 @@ RUN \
     apk del .build-deps
 
 # Install Composer globally
+COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER 1
-RUN \
-    curl -sS https://getcomposer.org/installer | php && \
-    mv composer.phar /usr/local/bin/composer && \
-    composer global require "hirak/prestissimo:dev-master" --no-suggest --optimize-autoloader --classmap-authoritative
+ENV COMPOSER_MEMORY_LIMIT -1
+RUN composer global require "hirak/prestissimo:dev-master" --no-suggest --optimize-autoloader --classmap-authoritative
 
 # Install custom PHP configuration
 COPY conf/* /usr/local/etc/php/
