@@ -7,7 +7,7 @@ services:
     depends_on:
       - php
     ports:
-      - 443:443
+      - "443:443"
     volumes:
       - ~/www:/var/www/html:rw,delegated
     tty: true
@@ -25,13 +25,13 @@ services:
     depends_on:
       - apache
     ports:
-      - 1080:80
+      - "1080:80"
 
   mongo:
     image: mongo:3.6
     env_file: docker-env
     ports:
-      - 27017:27017
+      - "27017:27017"
     volumes:
       - mongo:/data/db
     tty: true
@@ -40,7 +40,7 @@ services:
     build: mysql
     env_file: docker-env
     ports:
-      - 3306:3306
+      - "3306:3306"
     volumes:
       - mysql:/var/lib/mysql
     tty: true
@@ -53,7 +53,7 @@ services:
     tty: true
 
   redis:
-    image: redis:4-alpine
+    image: redis:6-alpine
     env_file: docker-env
     tty: true
 
