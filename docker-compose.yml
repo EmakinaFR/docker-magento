@@ -20,12 +20,13 @@ services:
       - php
 
   maildev:
-    image: djfarrelly/maildev:latest
-    env_file: docker-env
+    image: maildev/maildev
+    environment:
+        MAILDEV_SMTP_PORT: 25
     depends_on:
       - apache
     ports:
-      - "1080:80"
+      - "1080:1080"
 
   mongo:
     image: mongo:3.6
